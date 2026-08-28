@@ -2,7 +2,7 @@
 
 Entorno confirmado:
 - PostgreSQL: 17.11
-- SO: Windows 10/11 (PowerShell 5.1)
+- SO: Windows — terminal CMD + psql 17.11
 - Usuario: postgres
 - Host: localhost
 - Puerto: 5432
