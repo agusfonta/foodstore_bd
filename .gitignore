@@ -1,1 +1,2 @@
-backups/ 
+foodstore_bd/db/backups
+.env.example
