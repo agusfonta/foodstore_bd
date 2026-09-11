@@ -40,13 +40,12 @@ TRUNCATE detalle_pedido, pedidos, productos, clientes RESTART IDENTITY CASCADE;
 
 -- Variante B (desactivada): truncar tambien categorias y re-seedear.
 -- Descomentar solo si se quiere partir de 5 categorias canonicas:
--- TRUNCATE categorias RESTART IDENTITY CASCADE;
--- INSERT INTO categorias (nombre, descripcion) VALUES
---   ('Bebidas',   'Bebidas y aguas'),
---   ('Lacteos',   'Leche, yogures y quesos'),
---   ('Panaderia', 'Pan y facturas'),
---   ('Frutas',    'Frutas frescas'),
---   ('Snacks',    'Snacks y golosinas');
+TRUNCATE categorias RESTART IDENTITY CASCADE;
+INSERT INTO categorias (nombre, descripcion) VALUES
+('Bebidas',   'Bebidas y aguas'),
+('Lacteos',   'Leche, yogures y quesos'),
+('Panaderia', 'Pan y facturas'),
+('Frutas',    'Frutas frescas'),('Snacks',    'Snacks y golosinas');
 
 -- Verificacion opcional dentro de la transaccion (deben ser 0):
 -- SELECT 'detalle_pedido' AS tabla, COUNT(*) FROM detalle_pedido
