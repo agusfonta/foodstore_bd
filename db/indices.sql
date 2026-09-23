@@ -70,3 +70,41 @@ WHERE p.estado IN ('CONFIRMADO', 'TERMINADO')
   AND cl.eliminado = FALSE
 GROUP BY cl.id, cl.nombre, cl.apellido, cl.mail
 ORDER BY total_gastado DESC, cantidad_pedidos DESC;
+
+
+
+
+
+
+
+
+
+
+
+-- =========================================================
+-- ÍNDICES ACEPTADAS PARA OPTIMIZAR CONSULTAS:  TP 4
+-- =========================================================
+
+-- 1. Ranking por producto (Cons. 1): B-Tree parcial (estado, eliminado). `estado` primero por selectividad; condición replica el WHERE.
+CREATE INDEX idx_pedidos_volumen_venta
+ON pedidos (estado, eliminado)
+WHERE estado IN ('CONFIRMADO', 'TERMINADO')
+  AND eliminado = FALSE;
+
+  
+-- 2. Apoyo a Cons. 1: B-Tree covering (pedido_id, producto_id) para JOIN y GROUP BY; INCLUDE(cantidad, subtotal) evita ir al heap.
+CREATE INDEX idx_detalle_pedido_agg_ventas
+ON detalle_pedido (pedido_id, producto_id)
+INCLUDE (cantidad, subtotal);
+
+-- 3. Cobranza (Cons. 2): B-Tree (forma_pago, estado) en orden del GROUP BY; INCLUDE(total) cubre el SUM; parcial eliminado = FALSE.
+CREATE INDEX idx_pedidos_cobranza
+ON pedidos (forma_pago, estado)
+INCLUDE (total)
+WHERE eliminado = FALSE;
+
+-- 4. Historial por cliente (Cons. 3): B-Tree (cliente_id, fecha DESC) líder selectivo + orden del ORDER BY; INCLUDE(...) da covering total; parcial eliminado = FALSE.
+CREATE INDEX idx_pedidos_historial_cliente
+ON pedidos (cliente_id, fecha DESC)
+INCLUDE (estado, forma_pago, total)
+WHERE eliminado = FALSE;
