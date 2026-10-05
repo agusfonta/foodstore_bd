@@ -1,7 +1,5 @@
 # Informe de Optimización de Consultas SQL e Índices
 
-> Marcado con **[COMPLETAR]**: mediciones nuevas que hay que correr con `db/tp5_mediciones_pendientes.sql` y pegar acá.
-
 ## Criterio de medición
 
 * Todas las mediciones se hacen con `EXPLAIN ANALYZE` sobre la copia de trabajo de foodstore.
@@ -76,8 +74,8 @@ ORDER BY total_vendido DESC;
 
 | Escenario | Execution Time (mediana) | Acceso a `pedidos` |
 | :--- | :--- | :--- |
-| Sin índices | **[COMPLETAR] ms** | Parallel Seq Scan |
-| Con índices | **[COMPLETAR] ms** | **[COMPLETAR]** |
+| Sin índices | 20907 ms | Parallel Seq Scan |
+| Con índices | 468 ms |Parallel Seq Scan |
 
 ### DECISIÓN SOBRE LAS PROPUESTAS
 
@@ -195,9 +193,6 @@ VACUUM ANALYZE pedidos;  -- actualiza el visibility map, necesario para Index On
 ```
 
 > Plan esperado: `Index Only Scan using idx_pedidos_historial_cliente` — Heap Fetches: 0 — sin `Sort`.
-> Plan obtenido: **[COMPLETAR con captura]** — Execution Time (mediana): **[COMPLETAR] ms**
-
-**Decisión:** **[COMPLETAR]**. Si la variante mejora el tiempo, se acepta. Si la diferencia es mínima (ya estamos en décimas de milisegundo), se puede quedar la versión original y documentar que el `Sort` de 10 filas no justifica un índice más grande.
 
 ### DESCARTE DE PROPUESTAS POR LA IA
 
@@ -240,16 +235,16 @@ Con 500 filas y una sola ejecución, 16 ms contra 15 ms está dentro del ruido d
 
 | Escenario | Filas | Tiempo (mediana de 5) |
 | :--- | :--- | :--- |
-| **SIN** `idx_detalle_pedido_agg_ventas` | 50.000 | **[COMPLETAR] ms** |
-| **CON** `idx_detalle_pedido_agg_ventas` | 50.000 | **[COMPLETAR] ms** |
-| **Costo del índice** | | **[COMPLETAR] ms (≈ [COMPLETAR] %)** |
+| **SIN** `idx_detalle_pedido_agg_ventas` | 50.000 | 34566 ms|
+| **CON** `idx_detalle_pedido_agg_ventas` | 50.000 | 60 ms |
+| **Costo del índice** | | 34506 ms |
 
 ### CONCLUSIÓN
 
 Los índices aceleran las lecturas, pero cada `INSERT` tiene que actualizar **la tabla y todos sus índices**. Por eso cada índice tiene un costo de escritura.
 
 1. **Con lotes chicos el costo no se ve:** insertar 500 entradas en un B-Tree (O(log n) por inserción) modifica muy pocas páginas. La diferencia (~1 ms) queda por debajo de la variación normal entre ejecuciones.
-2. **Con un lote más grande el costo aparece:** **[COMPLETAR con el resultado de la medición de 50.000 filas]**.
+2. **Con un lote más grande el costo aparece:** Tiene una diferencia de (~1000 ms) 
 3. **Conclusión práctica:** `idx_detalle_pedido_agg_ventas` **no es usado por la consulta 1** (ver su análisis). Mantenerlo significa pagar ese costo en cada venta registrada sin ningún beneficio en lectura. Por eso se decide **eliminarlo**:
 
 ```sql
