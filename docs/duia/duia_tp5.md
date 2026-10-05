@@ -55,7 +55,7 @@
 | :--- | :--- |
 | **Herramienta** | OpenCode 
 | **Modelo/proveedor** | OpenCode zen|
-| **Spec o prompt utilizado** | **[CONFIRMAR el prompt usado]** |
+| **Spec o prompt utilizado** | Especificado en los archivos spec |
 | **Qué generó** | Script de prueba: 100 pedidos + 500 filas en `detalle_pedido` dentro de `BEGIN … ROLLBACK`, midiendo sin y con `idx_detalle_pedido_agg_ventas`. |
 | **Qué se aceptó** | La estructura de la prueba (transacción con ROLLBACK para no dejar datos). |
 | **Qué se modificó o descartó, y por qué** | La línea `\timing on sobre el INSERT` no es válida en DBeaver (`\timing` es un comando de psql). Una sola ejecución de 500 filas (16 ms contra 15 ms) no alcanza para sacar conclusiones, porque la diferencia es ruido. Se repite con 50.000 filas y 5 ejecuciones, midiendo con `EXPLAIN ANALYZE` sobre el INSERT. |
