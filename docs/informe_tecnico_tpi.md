@@ -145,7 +145,7 @@ Todas las cifras son *Execution Time* de `EXPLAIN ANALYZE` y están tomadas de l
 | Productos más caros que el promedio de su categoría | Reescritura: subconsulta correlacionada → CTE con un único `AVG` por categoría + índice parcial `(categoria_id, precio)` | 174.947,862 ms | 58,058 ms | ≈ 3.000 × | Aceptado (Nested Loop → Hash Join) | [`TP4 (docx)`](../Informes_tps/TP4_Semana4_Unidad2_Practica.docx) |
 | Ranking de productos por categoría | Reescritura: subconsulta correlacionada → `RANK() OVER (PARTITION BY …)` + índice `(categoria_id, precio DESC, id)` | 101.891,491 ms | 67,771 ms | ≈ 1.500 × | Aceptado (→ Merge Join) | ídem |
 
-**Costo de escritura de los índices:** la prueba de inserción de 500 filas en `detalle_pedido` dio 16 ms sin índice y 15 ms con índice (diferencia dentro del ruido). La medición repetida con 50.000 filas está **pendiente de completar** en el informe de optimización (marcada `[COMPLETAR]`); por eso este informe no cita un costo de inserción.
+**Costo de escritura de los índices:** la prueba de inserción de 500 filas en `detalle_pedido` dio 16 ms sin índice y 15 ms con índice (diferencia dentro del ruido). Con un lote de **50.000 filas** y mediana de 5 corridas el `INSERT` tardó **973,4 ms sin** `idx_detalle_pedido_agg_ventas` y **1052,1 ms con** él: el índice cuesta **≈ 79 ms (≈ 8 %)** por lote. Medición en una instancia temporal de PostgreSQL 17.11 con la carga masiva completa; detalle y entorno en el [informe de optimización](../Informes_tps/Informe_optimizacion_consultas_indices.md). Como ese índice no lo usa la consulta de ranking, se decide eliminarlo.
 
 ---
 
@@ -173,4 +173,4 @@ Las herramientas indicadas por la cátedra (OpenCode con distintos modelos y Kir
 1. `pedidos.total` es un atributo derivado **sin restricción declarativa**: depende de `sp_crear_pedido` (auditable con `fn_total_pedido`). Un trigger sobre `detalle_pedido` lo blindaría.
 2. `UNIQUE` sobre `productos.nombre`, `clientes.mail` y `categorias.nombre` abarca también filas dadas de baja (ver 3.3).
 3. El mínimo de un renglón por pedido (participación total de `PEDIDO` en `CONTIENE`) lo garantiza el procedimiento, no el DDL.
-4. Medición de inserción por lotes de 50.000 filas pendiente en el informe de optimización (sección 4).
+4. La medición de inserción por lotes (sección 4) se hizo en una instancia temporal, no en `foodstore_desarrollo`; los tiempos absolutos pueden variar en la copia de trabajo del equipo, pero el orden de magnitud (≈ 1 s por lote y un costo del índice de pocos puntos porcentuales) debería mantenerse.

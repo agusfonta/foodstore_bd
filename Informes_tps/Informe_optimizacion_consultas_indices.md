@@ -235,16 +235,18 @@ Con 500 filas y una sola ejecución, 16 ms contra 15 ms está dentro del ruido d
 
 | Escenario | Filas | Tiempo (mediana de 5) |
 | :--- | :--- | :--- |
-| **SIN** `idx_detalle_pedido_agg_ventas` | 50.000 | 34566 ms|
-| **CON** `idx_detalle_pedido_agg_ventas` | 50.000 | 60 ms |
-| **Costo del índice** | | 34506 ms |
+| **SIN** `idx_detalle_pedido_agg_ventas` | 50.000 | **973,4 ms** (corridas: 1078,4 · 988,8 · 914,2 · 947,1 · 973,4) |
+| **CON** `idx_detalle_pedido_agg_ventas` | 50.000 | **1052,1 ms** (corridas: 1074,4 · 1057,6 · 1052,1 · 1011,9 · 1037,6) |
+| **Costo del índice** | | **+78,7 ms (≈ +8,1 %)**, unos 1,6 µs por fila insertada |
+
+> **Entorno de esta medición:** PostgreSQL 17.11 en una instancia temporal (Windows 11, `shared_buffers = 128MB`), con la carga masiva del script `db/04_dml_carga_masiva.sql` (200.000 pedidos, 600.000 renglones) y los índices de `db/03_ddl_indices.sql`. Se ejecutó 5 veces cada bloque 3.a / 3.b de `db/anexos_tps/tp5_mediciones_pendientes.sql` (alternando SIN/CON, cada uno dentro de `BEGIN … ROLLBACK`) y se informa la mediana del *Execution Time* del `EXPLAIN ANALYZE` del `INSERT`. En el escenario SIN solo se quita este índice: `detalle_pedido` conserva su PK, el `UNIQUE (pedido_id, producto_id)` e `idx_detalle_pedido_pedido_eliminado`, y cada lote también paga las FK y los índices de `pedidos`; por eso el tiempo base ronda 1 s. Medición realizada con Claude Code (ver DUIA).
 
 ### CONCLUSIÓN
 
 Los índices aceleran las lecturas, pero cada `INSERT` tiene que actualizar **la tabla y todos sus índices**. Por eso cada índice tiene un costo de escritura.
 
 1. **Con lotes chicos el costo no se ve:** insertar 500 entradas en un B-Tree (O(log n) por inserción) modifica muy pocas páginas. La diferencia (~1 ms) queda por debajo de la variación normal entre ejecuciones.
-2. **Con un lote más grande el costo aparece:** Tiene una diferencia de (~1000 ms) 
+2. **Con un lote más grande el costo aparece:** con 50.000 filas el índice agrega **≈ 79 ms (≈ 8 %)** al `INSERT` (973,4 ms → 1052,1 ms). Es un costo chico en términos absolutos pero real, y se paga en cada venta registrada.
 3. **Conclusión práctica:** `idx_detalle_pedido_agg_ventas` **no es usado por la consulta 1** (ver su análisis). Mantenerlo significa pagar ese costo en cada venta registrada sin ningún beneficio en lectura. Por eso se decide **eliminarlo**:
 
 ```sql
