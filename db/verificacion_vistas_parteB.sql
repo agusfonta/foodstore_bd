@@ -4,7 +4,7 @@
 -- Uso (psql, tras verificar \conninfo = foodstore_desarrollo):
 --   \i db/vistas_reportes_prompt_opencode.sql
 --   \i db/vistas_reportes_prompt_propio.sql
---   \i db/views.sql
+--   \i db/06_vistas.sql
 --   \i db/verificacion_vistas_parteB.sql
 -- Cada EXCEPT debe devolver 0 filas. Pegar los resultados en
 -- docs/bitacora_verificacion_vistas_parteB.md

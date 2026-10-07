@@ -11,9 +11,9 @@
 --   (o pegar bloque por bloque en DBeaver / pgAdmin y anotar los tiempos)
 --
 -- REQUISITOS PREVIOS:
---   1. Base foodstore_desarrollo cargada con carga_masiva.sql
---   2. Vista mv_facturacion_categoria_mes ya creada (vista_materializada.sql)
---      Si aún no existe, ejecutar primero vista_materializada.sql
+--   1. Base foodstore_desarrollo cargada con 04_dml_carga_masiva.sql
+--   2. Vista mv_facturacion_categoria_mes ya creada (07_vista_materializada.sql)
+--      Si aún no existe, ejecutar primero 07_vista_materializada.sql
 -- =========================================================
 
 -- =========================================================

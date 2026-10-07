@@ -1,7 +1,7 @@
 # DUIA — Parte B: Vistas para reportes (Foodstore)
 
 **Proyecto:** Foodstore — PostgreSQL 17 (base de trabajo `foodstore_desarrollo`)
-**Archivos:** `db/views.sql` (entregable), `db/vistas_reportes_prompt_opencode.sql`, `db/vistas_reportes_prompt_propio.sql`
+**Archivos:** `db/06_vistas.sql` (entregable), `db/vistas_reportes_prompt_opencode.sql`, `db/vistas_reportes_prompt_propio.sql`
 **Spec base:** `spec/spec_parteB_kiro.md`
 **Verificación:** `docs/bitacora_verificacion_vistas_parteB.md` + `db/verificacion_vistas_parteB.sql`
 **Fecha:** 2026-09-23
@@ -15,7 +15,7 @@
 | **Spec o prompt utilizado** | Kiro: `v_productos_vigentes: p.id, p.nombre, p.precio, p.stock, c.nombre como categoria. Solo vigentes con p.eliminado=false y p.deleted_at is null y c.eliminado=false y c.deleted_at is null.` (texto completo en `spec/spec_parteB_kiro.md`) |
 | **Qué generó** | OpenCode: `v_productos_vigentes_con_categoria(producto_id, producto_nombre, precio, stock, disponible, categoria_id, categoria_nombre)` con `JOIN categorias` y doble filtro de vigencia |
 | **Qué se aceptó** | JOIN, filtros WHERE y lista base de columnas tal cual |
-| **Qué se modificó o descartó, y por qué** | Se agregaron `disponible` y `categoria_id` en la versión OpenCode para reportes (no pedidas en el prompt corto de Kiro). No afecta filas, solo columnas expuestas. La versión definitiva `db/views.sql` conserva esas columnas extra |
+| **Qué se modificó o descartó, y por qué** | Se agregaron `disponible` y `categoria_id` en la versión OpenCode para reportes (no pedidas en el prompt corto de Kiro). No afecta filas, solo columnas expuestas. La versión definitiva `db/06_vistas.sql` conserva esas columnas extra |
 | **Verificación realizada** | `EXCEPT` en ambas direcciones sobre columnas comunes + conteo. Ver `docs/bitacora_verificacion_vistas_parteB.md` Vista 1. Esperado: 0 filas de diferencia |
 
 ## Vista 2 — Pedidos con datos del usuario (criterio de seguridad)
@@ -27,7 +27,7 @@
 | **Qué generó** | OpenCode: `v_pedidos_con_cliente(pedido_id, fecha, estado, total, forma_pago, cliente_id, cliente_nombre, cliente_apellido, cliente_mail, cliente_celular)` sin `contrasenia`, sin `rol`, sin auditoría |
 | **Qué se aceptó** | Exclusión total de `clientes.contrasenia` tal cual. Es la vista que implementa el criterio teórico |
 | **Qué se modificó o descartó, y por qué** | Se agregó `cliente_id` en versión OpenCode para trazabilidad de reportes. Se descartó exponer `rol` por ser dato de autorización interna |
-| **Verificación realizada** | `EXCEPT` bidireccional + `SELECT contrasenia FROM vista` (debe fallar) + `information_schema.columns WHERE column_name='contrasenia'` (debe dar 0 filas). Patrón `REVOKE ON clientes / GRANT SELECT ON vista TO rol_reportes` documentado en `db/views.sql` |
+| **Verificación realizada** | `EXCEPT` bidireccional + `SELECT contrasenia FROM vista` (debe fallar) + `information_schema.columns WHERE column_name='contrasenia'` (debe dar 0 filas). Patrón `REVOKE ON clientes / GRANT SELECT ON vista TO rol_reportes` documentado en `db/06_vistas.sql` |
 
 ## Vista 3 — Detalle de pedido con nombre del producto
 

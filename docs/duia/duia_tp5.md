@@ -1,7 +1,7 @@
 # DUIA — TP 5: Optimización de consultas con índices (Foodstore)
 
 **Proyecto:** Foodstore — PostgreSQL, base de trabajo `foodstore_desarrollo` (copia, no producción)
-**Informe asociado:** `Informes_tps/TP5_Informe_mediciones.md`
+**Informe asociado:** `Informes_tps/Informe_optimizacion_consultas_indices.md`
 **Specs asociadas:** `spec/spec_tp5.md`
 **Script de mediciones:** `db/tp5_mediciones_pendientes.sql`
 
@@ -60,4 +60,4 @@
 | **Qué se aceptó** | La estructura de la prueba (transacción con ROLLBACK para no dejar datos). |
 | **Qué se modificó o descartó, y por qué** | La línea `\timing on sobre el INSERT` no es válida en DBeaver (`\timing` es un comando de psql). Una sola ejecución de 500 filas (16 ms contra 15 ms) no alcanza para sacar conclusiones, porque la diferencia es ruido. Se repite con 50.000 filas y 5 ejecuciones, midiendo con `EXPLAIN ANALYZE` sobre el INSERT. |
 
-### Las verificaciones de uso: Informes_tps/TP5_Informe_mediciones.md 
+### Las verificaciones de uso: Informes_tps/Informe_optimizacion_consultas_indices.md 

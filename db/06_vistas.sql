@@ -1,6 +1,6 @@
 -- =============================================================================
 -- PARTE B — VISTAS PARA LOS REPORTES DEL SISTEMA (entregable)
--- Archivo: db/views.sql — NO BORRA ni reemplaza los archivos previos:
+-- Archivo: db/06_vistas.sql — NO BORRA ni reemplaza los archivos previos:
 --   db/vistas_reportes_prompt_opencode.sql (versión OpenCode, completa)
 --   db/vistas_reportes_prompt_propio.sql   (versión estudiante, manual)
 -- Este archivo consolida las 3 vistas DEFINITIVAS validadas, tomando como base
