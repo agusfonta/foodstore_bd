@@ -4,10 +4,10 @@
 -- Uso (psql, tras verificar \conninfo = foodstore_desarrollo):
 --   \i db/anexos_tps/vistas_reportes_prompt_opencode.sql
 --   \i db/anexos_tps/vistas_reportes_prompt_propio.sql
---   \i db/06_vistas.sql
+--   \i db/parcial1_06_vistas.sql
 --   \i db/anexos_tps/verificacion_vistas_parteB.sql
 -- Cada EXCEPT debe devolver 0 filas. Pegar los resultados en
--- docs/informes/bitacora_verificacion_vistas_parteB.md
+-- docs/informes/parcial1_bitacora_verificacion_vistas_parteB.md
 -- =============================================================================
 
 -- ---------- VISTA 1: productos + categoría (columnas comunes) ----------

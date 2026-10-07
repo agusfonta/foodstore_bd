@@ -1,11 +1,11 @@
 -- =============================================================================
 -- FOODSTORE - Borrado logico (soft delete) e impacto en consultas e indices
--- TPI «Food Store» - Primera entrega parcial (Unidades 1, 2 y 3)
+-- TPI «Food Store» - PARCIAL 1 (primera entrega parcial) (Unidades 1, 2 y 3)
 -- Objetivo 9 de la consigna: "Borrado logico (soft delete) y su impacto correcto
 --                             sobre consultas e indices"
 -- Motor: PostgreSQL 16+ (probado en 17)
 -- =============================================================================
--- COMO ESTA IMPLEMENTADO EL BORRADO LOGICO (script 01_ddl_schema.sql)
+-- COMO ESTA IMPLEMENTADO EL BORRADO LOGICO (script parcial1_01_ddl_schema.sql)
 --   Todas las tablas "maestras" (categorias, productos, clientes, pedidos) tienen
 --     eliminado  BOOLEAN NOT NULL DEFAULT FALSE
 --     deleted_at TIMESTAMPTZ  (fecha de la baja, NULL = vigente)
@@ -73,7 +73,7 @@ SELECT count(*) AS vigentes_despues
 FROM v_productos_vigentes_con_categoria WHERE categoria_nombre = 'TPI_BL_Categoria';
 -- Esperado: 1
 
--- 2.c) Las consultas de reportes (05_dml_consultas.sql) lo excluyen con
+-- 2.c) Las consultas de reportes (parcial1_05_dml_consultas.sql) lo excluyen con
 --      "pr.eliminado = FALSE": el ranking de ventas ya no lo cuenta ...
 SELECT pr.id, pr.nombre, SUM(dp.cantidad) AS unidades_vendidas
 FROM detalle_pedido dp
@@ -127,13 +127,13 @@ SELECT (SELECT count(*) FROM v_pedidos_con_cliente
 
 -- =============================================================================
 -- 4) IMPACTO EN INDICES - los indices parciales "WHERE eliminado = FALSE"
---    (03_ddl_indices.sql) solo contienen filas vigentes:
+--    (parcial1_03_ddl_indices.sql) solo contienen filas vigentes:
 --      * son mas chicos (no cargan filas dadas de baja),
 --      * pero el planner SOLO los usa si la consulta repite el predicado
 --        eliminado = FALSE (por eso todas las consultas del proyecto lo incluyen).
 --    Con tan pocas filas el planner prefiere Seq Scan; se desactiva SOLO dentro de
 --    la transaccion para poder mostrar el uso del indice. (Con la carga masiva del
---    script 04 el planner lo elige solo, ver Informes_tps/Informe_optimizacion_consultas_indices.md.)
+--    script 04 el planner lo elige solo, ver Informes_tps/Parcial1_Informe_optimizacion_consultas_indices.md.)
 -- =============================================================================
 BEGIN;
 SET LOCAL enable_seqscan = off;

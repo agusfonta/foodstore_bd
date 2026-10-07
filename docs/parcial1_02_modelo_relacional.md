@@ -1,8 +1,8 @@
 # 02 — Paso del modelo ER al modelo relacional
 
-> **TPI «Food Store» — Primera entrega parcial · Objetivo 2 de la consigna:**
+> **TPI «Food Store» — PARCIAL 1 (primera entrega parcial) · Objetivo 2 de la consigna:**
 > *Paso de ER a modelo relacional, incluyendo relaciones 1:N y N:M resueltas mediante tablas intermedias.*
-> Parte de: [`01_modelo_er.md`](01_modelo_er.md) · Implementación: [`db/01_ddl_schema.sql`](../db/01_ddl_schema.sql) · Siguiente: [`03_normalizacion.md`](03_normalizacion.md)
+> Parte de: [`parcial1_01_modelo_er.md`](parcial1_01_modelo_er.md) · Implementación: [`db/parcial1_01_ddl_schema.sql`](../db/parcial1_01_ddl_schema.sql) · Siguiente: [`parcial1_03_normalizacion.md`](parcial1_03_normalizacion.md)
 
 ## 1. Reglas de transformación aplicadas
 
@@ -109,7 +109,7 @@ erDiagram
 
 ## 4. Verificación contra el catálogo de PostgreSQL
 
-Consulta ejecutada sobre la base creada con `01_ddl_schema.sql` + `02_reglas_negocio_check_unique_triggers.sql` (PostgreSQL 17.11):
+Consulta ejecutada sobre la base creada con `parcial1_01_ddl_schema.sql` + `parcial1_02_reglas_negocio_check_unique_triggers.sql` (PostgreSQL 17.11):
 
 ```sql
 SELECT conrelid::regclass AS tabla, conname AS restriccion, contype AS tipo,
@@ -139,4 +139,4 @@ Se obtienen **4 claves foráneas** (2 de relaciones 1:N + 2 de la N:M resuelta),
 
 ## 5. Orden de creación y de carga (consecuencia de las FK)
 
-`categorias` → `clientes` → `productos` → `pedidos` → `detalle_pedido`. Para eliminar o truncar, el orden inverso (o `TRUNCATE … CASCADE`, como hace [`04_dml_carga_masiva.sql`](../db/04_dml_carga_masiva.sql)).
+`categorias` → `clientes` → `productos` → `pedidos` → `detalle_pedido`. Para eliminar o truncar, el orden inverso (o `TRUNCATE … CASCADE`, como hace [`parcial1_04_dml_carga_masiva.sql`](../db/parcial1_04_dml_carga_masiva.sql)).

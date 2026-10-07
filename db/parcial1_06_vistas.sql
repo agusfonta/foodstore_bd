@@ -1,12 +1,12 @@
 -- =============================================================================
 -- PARTE B — VISTAS PARA LOS REPORTES DEL SISTEMA (entregable)
--- Archivo: db/06_vistas.sql — NO BORRA ni reemplaza los archivos previos:
+-- Archivo: db/parcial1_06_vistas.sql — NO BORRA ni reemplaza los archivos previos:
 --   db/anexos_tps/vistas_reportes_prompt_opencode.sql (versión OpenCode, completa)
 --   db/anexos_tps/vistas_reportes_prompt_propio.sql   (versión estudiante, manual)
 -- Este archivo consolida las 3 vistas DEFINITIVAS validadas, tomando como base
 -- la versión OpenCode (más completa en columnas) porque la verificación de
 -- equivalencia demostró que ambas devuelven el mismo conjunto de filas sobre
--- las columnas comunes (ver docs/informes/bitacora_verificacion_vistas_parteB.md).
+-- las columnas comunes (ver docs/informes/parcial1_bitacora_verificacion_vistas_parteB.md).
 -- Base: foodstore, PostgreSQL 17. Ejecutar sobre foodstore_desarrollo.
 -- Protocolo previo (no ejecutar vistas sobre foodstore original):
 --   createdb -U postgres -h localhost -p 5432 -T foodstore foodstore_desarrollo

@@ -1,7 +1,7 @@
 # Foodstore Database TP2 - Instrucciones para Agentes
 
 ## Contexto del Proyecto
-Este repositorio contiene un esquema de PostgreSQL para una tienda de alimentos (`foodstore`) en `Script.sql` y las consignas del Trabajo Práctico 2 sobre integridad, transacciones y concurrencia.
+Este repositorio es la entrega **Parcial 1 del TPI «Food Store»** (`Informe_Parcial_1.md` en la raíz). Contiene el esquema de PostgreSQL de una tienda de alimentos (`foodstore`) en `db/parcial1_01_ddl_schema.sql` (antes `Script.sql`) y los trabajos prácticos que lo componen; el TP2 trató sobre integridad, transacciones y concurrencia.
 
 ## Reglas Críticas (No negociables por la cátedra)
 

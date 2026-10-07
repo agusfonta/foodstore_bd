@@ -6,7 +6,7 @@
 | :--- | :--- |
 | **Herramienta** | Kiro (Claude – Anthropic) |
 | **Spec o prompt utilizado** | "Elegir un reporte agregado costoso del sistema (por ejemplo, facturación por categoría y mes, u otro que el estudiante identifique a partir de las consultas analíticas de la Semana 4) y crear la vista materializada correspondiente, con WITH DATA y un índice único que permita, a futuro, un REFRESH CONCURRENTLY." |
-| **Qué generó** | Archivo `db/07_vista_materializada.sql` con: (1) `CREATE MATERIALIZED VIEW mv_facturacion_categoria_mes … WITH DATA`, (2) `CREATE UNIQUE INDEX uix_mv_facturacion_categoria_mes ON … (categoria_id, mes)`, (3) índice secundario por mes, (4) comentarios explicativos de cada paso y comandos de rollback/refresh. |
+| **Qué generó** | Archivo `db/parcial1_07_vista_materializada.sql` con: (1) `CREATE MATERIALIZED VIEW mv_facturacion_categoria_mes … WITH DATA`, (2) `CREATE UNIQUE INDEX uix_mv_facturacion_categoria_mes ON … (categoria_id, mes)`, (3) índice secundario por mes, (4) comentarios explicativos de cada paso y comandos de rollback/refresh. |
 | **Qué se aceptó** | La estructura completa del script tal como fue generada: nombre de la vista, columnas agregadas (`total_facturado`, `cantidad_pedidos`, `cantidad_productos_distintos`), filtros de estado y borrado lógico, y ambos índices. |
 | **Qué se modificó o descartó, y por qué** | — (ninguna modificación manual; la consulta base es idéntica a la ya validada en `indexes_optimizacion.sql`) |
 | **Verificación realizada** | Ver sección abajo |
@@ -51,7 +51,7 @@ Ejecutar en `foodstore_desarrollo` dentro de un bloque de transacción de inspec
 
 ```sql
 -- Paso 1: crear la vista (en la copia de desarrollo)
-\i db/07_vista_materializada.sql
+\i db/parcial1_07_vista_materializada.sql
 
 -- Paso 2: verificar filas materializadas
 SELECT * FROM mv_facturacion_categoria_mes

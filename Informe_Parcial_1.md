@@ -1,11 +1,13 @@
-# Informe técnico — TPI «Food Store» · Primera entrega parcial
+# Informe Parcial 1 — TPI «Food Store»
+
+**Informe técnico de la primera entrega parcial**
 
 **Materia:** Base de Datos II · **Integrantes:** Gianella Peña, Martina Suarez y Agustina Fontagnol
 **Motor:** PostgreSQL 16+ con PL/pgSQL (desarrollado y probado en 17.11, Windows 11)
 **Alcance de esta entrega (Unidades 1, 2 y 3):** integridad, transacciones y concurrencia · optimización de consultas · índices, vistas y objetos programables.
 **Fecha:** 2026-10-07 (versión corregida a partir de la devolución del docente)
 
-> Esta entrega **no es el TP5**: el TP5 (optimización con índices) es una de las partes que la componen. El [`README.md`](../README.md) explica cómo recorrer el repositorio y los scripts están numerados en orden de ejecución.
+> Esta entrega **no es el TP5**: el TP5 (optimización con índices) es una de las partes que la componen. El [`README.md`](README.md) explica cómo recorrer el repositorio y los scripts están numerados en orden de ejecución.
 
 ---
 
@@ -13,15 +15,15 @@
 
 | # | Objetivo de la consigna | Evidencia en el repositorio | Cómo verificarlo |
 | :-: | :--- | :--- | :--- |
-| 1 | Modelo ER (entidades, atributos, claves, cardinalidad, participación) | [`docs/01_modelo_er.md`](01_modelo_er.md) | Diagrama ER + tablas de entidades y de relaciones con participación (mín,máx). Trabajo original del equipo: [TP1](../Informes_tps/TP1_FoodStore_ModeloER_Normalizacion_DDL.docx) (diagrama en [`img/`](img/TP1_diagrama_ER_pata_de_gallo.png)) |
-| 2 | Paso de ER a relacional, con 1:N y N:M resueltas con tablas intermedias | [`docs/02_modelo_relacional.md`](02_modelo_relacional.md) | Reglas R1–R7; `detalle_pedido` resuelve la N:M; consulta a `pg_constraint` (sección 4 del documento) |
-| 3 | Normalización hasta 3FN/BCNF con justificación de dependencias funcionales | [`docs/03_normalizacion.md`](03_normalizacion.md) | UNF → 1FN → 2FN → 3FN/BCNF, 9 dependencias funcionales numeradas, desnormalizaciones justificadas. El TP1 (Parte 3) hizo el mismo análisis sobre una planilla de ventas |
-| 4 | DDL completo: tipos, PK, FK, restricciones e índices | [`db/01_ddl_schema.sql`](../db/01_ddl_schema.sql) · [`db/03_ddl_indices.sql`](../db/03_ddl_indices.sql) | `ENUM`, `IDENTITY`, `TIMESTAMPTZ`, 5 PK, 4 FK, `CHECK`, `UNIQUE`, índices parciales/compuestos/*covering* |
-| 5 | DML y consultas: JOIN, agregación, subconsultas, GROUP BY/HAVING, ventana | [`db/04_dml_carga_masiva.sql`](../db/04_dml_carga_masiva.sql) · [`db/05_dml_consultas.sql`](../db/05_dml_consultas.sql) | Carga de 20.000 clientes / 50.000 productos / 200.000 pedidos / 600.000 renglones; consultas con `HAVING`, `RANK`, `LAG`, `ROW_NUMBER`, `NOT EXISTS` |
-| 6 | Vistas, funciones y procedimientos en PL/pgSQL | [`db/06_vistas.sql`](../db/06_vistas.sql) · [`db/07_vista_materializada.sql`](../db/07_vista_materializada.sql) · [`db/08_funciones_procedimientos_plpgsql.sql`](../db/08_funciones_procedimientos_plpgsql.sql) | 3 vistas + 1 materializada; 3 funciones; **5 procedimientos invocados con `CALL`** (ejemplos en la sección 1.3) |
-| 7 | Reglas de negocio con CHECK, UNIQUE y triggers | [`db/02_reglas_negocio_check_unique_triggers.sql`](../db/02_reglas_negocio_check_unique_triggers.sql) · [`docs/duia/duia_parte1.md`](duia/duia_parte1.md) | `CHECK` de subtotal, 2 triggers (transición de estado, baja de cliente), `UNIQUE` en el DDL; pruebas en la sección 3 |
-| 8 | Transacciones: atomicidad, COMMIT, ROLLBACK, aislamiento, concurrencia | [`db/09_transacciones.sql`](../db/09_transacciones.sql) · [`docs/informes/informe_concurrencia.md`](informes/informe_concurrencia.md) · [`capturas/`](../capturas) | Script ejecutable + 3 experimentos de dos sesiones con capturas |
-| 9 | Borrado lógico y su impacto en consultas e índices | [`db/10_borrado_logico.sql`](../db/10_borrado_logico.sql) | Columnas `eliminado`/`deleted_at`, `sp_baja_logica_*`, índices parciales, efecto en vistas y en `UNIQUE` |
+| 1 | Modelo ER (entidades, atributos, claves, cardinalidad, participación) | [`docs/parcial1_01_modelo_er.md`](docs/parcial1_01_modelo_er.md) | Diagrama ER + tablas de entidades y de relaciones con participación (mín,máx). Trabajo original del equipo: [TP1](Informes_tps/TP1_FoodStore_ModeloER_Normalizacion_DDL.docx) (diagrama en [`img/`](docs/img/TP1_diagrama_ER_pata_de_gallo.png)) |
+| 2 | Paso de ER a relacional, con 1:N y N:M resueltas con tablas intermedias | [`docs/parcial1_02_modelo_relacional.md`](docs/parcial1_02_modelo_relacional.md) | Reglas R1–R7; `detalle_pedido` resuelve la N:M; consulta a `pg_constraint` (sección 4 del documento) |
+| 3 | Normalización hasta 3FN/BCNF con justificación de dependencias funcionales | [`docs/parcial1_03_normalizacion.md`](docs/parcial1_03_normalizacion.md) | UNF → 1FN → 2FN → 3FN/BCNF, 9 dependencias funcionales numeradas, desnormalizaciones justificadas. El TP1 (Parte 3) hizo el mismo análisis sobre una planilla de ventas |
+| 4 | DDL completo: tipos, PK, FK, restricciones e índices | [`db/parcial1_01_ddl_schema.sql`](db/parcial1_01_ddl_schema.sql) · [`db/parcial1_03_ddl_indices.sql`](db/parcial1_03_ddl_indices.sql) | `ENUM`, `IDENTITY`, `TIMESTAMPTZ`, 5 PK, 4 FK, `CHECK`, `UNIQUE`, índices parciales/compuestos/*covering* |
+| 5 | DML y consultas: JOIN, agregación, subconsultas, GROUP BY/HAVING, ventana | [`db/parcial1_04_dml_carga_masiva.sql`](db/parcial1_04_dml_carga_masiva.sql) · [`db/parcial1_05_dml_consultas.sql`](db/parcial1_05_dml_consultas.sql) | Carga de 20.000 clientes / 50.000 productos / 200.000 pedidos / 600.000 renglones; consultas con `HAVING`, `RANK`, `LAG`, `ROW_NUMBER`, `NOT EXISTS` |
+| 6 | Vistas, funciones y procedimientos en PL/pgSQL | [`db/parcial1_06_vistas.sql`](db/parcial1_06_vistas.sql) · [`db/parcial1_07_vista_materializada.sql`](db/parcial1_07_vista_materializada.sql) · [`db/parcial1_08_funciones_procedimientos_plpgsql.sql`](db/parcial1_08_funciones_procedimientos_plpgsql.sql) | 3 vistas + 1 materializada; 3 funciones; **5 procedimientos invocados con `CALL`** (ejemplos en la sección 1.3) |
+| 7 | Reglas de negocio con CHECK, UNIQUE y triggers | [`db/parcial1_02_reglas_negocio_check_unique_triggers.sql`](db/parcial1_02_reglas_negocio_check_unique_triggers.sql) · [`docs/duia/duia_parte1.md`](docs/duia/duia_parte1.md) | `CHECK` de subtotal, 2 triggers (transición de estado, baja de cliente), `UNIQUE` en el DDL; pruebas en la sección 3 |
+| 8 | Transacciones: atomicidad, COMMIT, ROLLBACK, aislamiento, concurrencia | [`db/parcial1_09_transacciones.sql`](db/parcial1_09_transacciones.sql) · [`docs/informes/parcial1_informe_concurrencia.md`](docs/informes/parcial1_informe_concurrencia.md) · [`capturas/`](capturas) | Script ejecutable + 3 experimentos de dos sesiones con capturas |
+| 9 | Borrado lógico y su impacto en consultas e índices | [`db/parcial1_10_borrado_logico.sql`](db/parcial1_10_borrado_logico.sql) | Columnas `eliminado`/`deleted_at`, `sp_baja_logica_*`, índices parciales, efecto en vistas y en `UNIQUE` |
 
 ---
 
@@ -29,24 +31,24 @@
 
 ### 1.1 Unidad 1 — Integridad, transacciones y concurrencia
 
-* **Protocolo de seguridad** de 3 pasos (copia de trabajo con `createdb -T`, transacción con `ROLLBACK` previo, respaldo con `pg_dump`): [`protocolo_seguridad.md`](../protocolo_seguridad.md). Respaldo de ejemplo en [`backups/`](../backups).
-* **Restricciones de integridad** ([script 02](../db/02_reglas_negocio_check_unique_triggers.sql)): regla 1, `CHECK subtotal = cantidad × precio_unitario`; regla 2, trigger `trg_pedidos_transicion_estado` (PENDIENTE → CONFIRMADO/CANCELADO, CONFIRMADO → TERMINADO/CANCELADO; los estados finales no cambian); regla 3, trigger `trg_clientes_baja_logica` (no se da de baja a un cliente con pedidos PENDIENTE o CONFIRMADO). Más los `CHECK`, `UNIQUE` y FK del [DDL](../db/01_ddl_schema.sql). DUIA: [`duia_parte1.md`](duia/duia_parte1.md).
-* **Concurrencia** ([informe_concurrencia.md](informes/informe_concurrencia.md)): lectura no repetible, lectura fantasma y espera por bloqueo, cada una con dos sesiones, en `READ COMMITTED` y `REPEATABLE READ`; capturas en [`capturas/`](../capturas). DUIA: [`duia_parte2.md`](duia/duia_parte2.md).
-* **Lectura crítica de SQL peligroso** (`UPDATE` sin `WHERE`, `NOT IN` con `NULL`): [`ejercicio_lectura_critica.md`](informes/ejercicio_lectura_critica.md).
-* **Transacciones sobre objetos programables** ([script 09](../db/09_transacciones.sql)): atomicidad con `sp_crear_pedido`, `SAVEPOINT`, `ROLLBACK`, `COMMIT`, niveles de aislamiento y concurrencia sobre la última unidad de stock.
+* **Protocolo de seguridad** de 3 pasos (copia de trabajo con `createdb -T`, transacción con `ROLLBACK` previo, respaldo con `pg_dump`): [`protocolo_seguridad.md`](protocolo_seguridad.md). Respaldo de ejemplo en [`backups/`](backups).
+* **Restricciones de integridad** ([script 02](db/parcial1_02_reglas_negocio_check_unique_triggers.sql)): regla 1, `CHECK subtotal = cantidad × precio_unitario`; regla 2, trigger `trg_pedidos_transicion_estado` (PENDIENTE → CONFIRMADO/CANCELADO, CONFIRMADO → TERMINADO/CANCELADO; los estados finales no cambian); regla 3, trigger `trg_clientes_baja_logica` (no se da de baja a un cliente con pedidos PENDIENTE o CONFIRMADO). Más los `CHECK`, `UNIQUE` y FK del [DDL](db/parcial1_01_ddl_schema.sql). DUIA: [`duia_parte1.md`](docs/duia/duia_parte1.md).
+* **Concurrencia** ([parcial1_informe_concurrencia.md](docs/informes/parcial1_informe_concurrencia.md)): lectura no repetible, lectura fantasma y espera por bloqueo, cada una con dos sesiones, en `READ COMMITTED` y `REPEATABLE READ`; capturas en [`capturas/`](capturas). DUIA: [`duia_parte2.md`](docs/duia/duia_parte2.md).
+* **Lectura crítica de SQL peligroso** (`UPDATE` sin `WHERE`, `NOT IN` con `NULL`): [`parcial1_ejercicio_lectura_critica.md`](docs/informes/parcial1_ejercicio_lectura_critica.md).
+* **Transacciones sobre objetos programables** ([script 09](db/parcial1_09_transacciones.sql)): atomicidad con `sp_crear_pedido`, `SAVEPOINT`, `ROLLBACK`, `COMMIT`, niveles de aislamiento y concurrencia sobre la última unidad de stock.
 
 ### 1.2 Unidad 2 — Optimización de consultas
 
-* **Carga masiva** ([script 04](../db/04_dml_carga_masiva.sql)) con `generate_series`, set-based, respetando todas las restricciones: 20.000 clientes, 50.000 productos, 200.000 pedidos y 600.000 renglones.
-* **Consultas de reporte** ([script 05](../db/05_dml_consultas.sql)): facturación por categoría y mes, ranking de clientes, ranking de productos por categoría (`RANK() OVER`), productos más caros que el promedio de su categoría (subconsulta correlacionada), cobranza por forma de pago, top de productos vendidos; **agregadas en esta versión:** `GROUP BY … HAVING`, `NOT EXISTS`, `LAG()`/`SUM() OVER`, `ROW_NUMBER() OVER (PARTITION BY …)` y sentencias `INSERT`/`UPDATE` probadas dentro de `BEGIN … ROLLBACK`.
-* **Medición con `EXPLAIN ANALYZE`**, reescrituras (subconsulta correlacionada → CTE / función de ventana) y propuestas de índices evaluadas con criterio: [`Informes_tps/Informe_optimizacion_consultas_indices.md`](../Informes_tps/Informe_optimizacion_consultas_indices.md), specs en [`spec/spec_tp5.md`](../spec/spec_tp5.md), scripts de medición [`db/anexos_tps/tp5_mediciones_pendientes.sql`](../db/anexos_tps/tp5_mediciones_pendientes.sql) y [`db/anexos_tps/parte5_competencia.sql`](../db/anexos_tps/parte5_competencia.sql).
+* **Carga masiva** ([script 04](db/parcial1_04_dml_carga_masiva.sql)) con `generate_series`, set-based, respetando todas las restricciones: 20.000 clientes, 50.000 productos, 200.000 pedidos y 600.000 renglones.
+* **Consultas de reporte** ([script 05](db/parcial1_05_dml_consultas.sql)): facturación por categoría y mes, ranking de clientes, ranking de productos por categoría (`RANK() OVER`), productos más caros que el promedio de su categoría (subconsulta correlacionada), cobranza por forma de pago, top de productos vendidos; **agregadas en esta versión:** `GROUP BY … HAVING`, `NOT EXISTS`, `LAG()`/`SUM() OVER`, `ROW_NUMBER() OVER (PARTITION BY …)` y sentencias `INSERT`/`UPDATE` probadas dentro de `BEGIN … ROLLBACK`.
+* **Medición con `EXPLAIN ANALYZE`**, reescrituras (subconsulta correlacionada → CTE / función de ventana) y propuestas de índices evaluadas con criterio: [`Informes_tps/Parcial1_Informe_optimizacion_consultas_indices.md`](Informes_tps/Parcial1_Informe_optimizacion_consultas_indices.md), specs en [`spec/spec_tp5.md`](spec/spec_tp5.md), scripts de medición [`db/anexos_tps/tp5_mediciones_pendientes.sql`](db/anexos_tps/tp5_mediciones_pendientes.sql) y [`db/anexos_tps/parte5_competencia.sql`](db/anexos_tps/parte5_competencia.sql).
 
 ### 1.3 Unidad 3 — Índices, vistas y objetos programables
 
-* **Índices** ([script 03](../db/03_ddl_indices.sql)): B-Tree compuestos, **parciales** (`WHERE eliminado = FALSE`, `WHERE estado IN (…)`) y **covering** (`INCLUDE`). Los aceptados tras medir: `idx_pedidos_cobranza` e `idx_pedidos_historial_cliente`; los descartados por no ser usados por el planner (`idx_pedidos_volumen_venta`, `idx_detalle_pedido_agg_ventas`) están documentados con su motivo.
-* **Vistas** ([script 06](../db/06_vistas.sql)): `v_productos_vigentes_con_categoria`, `v_pedidos_con_cliente` (no expone la contraseña), `v_detalle_pedido_con_producto`. Equivalencia entre dos versiones generadas por IA verificada con `EXCEPT`: [`informe_equivalencia_vistas.md`](informes/informe_equivalencia_vistas.md) y [`bitacora_verificacion_vistas_parteB.md`](informes/bitacora_verificacion_vistas_parteB.md).
-* **Vista materializada** ([script 07](../db/07_vista_materializada.sql)): `mv_facturacion_categoria_mes` con índice único para `REFRESH … CONCURRENTLY`; [política de refresco](informes/politica_refresh.md) y [benchmark](informes/benchmark_resultados.md).
-* **Funciones y procedimientos PL/pgSQL** ([script 08](../db/08_funciones_procedimientos_plpgsql.sql)):
+* **Índices** ([script 03](db/parcial1_03_ddl_indices.sql)): B-Tree compuestos, **parciales** (`WHERE eliminado = FALSE`, `WHERE estado IN (…)`) y **covering** (`INCLUDE`). Los aceptados tras medir: `idx_pedidos_cobranza` e `idx_pedidos_historial_cliente`; los descartados por no ser usados por el planner (`idx_pedidos_volumen_venta`, `idx_detalle_pedido_agg_ventas`) están documentados con su motivo.
+* **Vistas** ([script 06](db/parcial1_06_vistas.sql)): `v_productos_vigentes_con_categoria`, `v_pedidos_con_cliente` (no expone la contraseña), `v_detalle_pedido_con_producto`. Equivalencia entre dos versiones generadas por IA verificada con `EXCEPT`: [`parcial1_informe_equivalencia_vistas.md`](docs/informes/parcial1_informe_equivalencia_vistas.md) y [`parcial1_bitacora_verificacion_vistas_parteB.md`](docs/informes/parcial1_bitacora_verificacion_vistas_parteB.md).
+* **Vista materializada** ([script 07](db/parcial1_07_vista_materializada.sql)): `mv_facturacion_categoria_mes` con índice único para `REFRESH … CONCURRENTLY`; [política de refresco](docs/informes/parcial1_politica_refresh.md) y [benchmark](docs/informes/parcial1_benchmark_resultados.md).
+* **Funciones y procedimientos PL/pgSQL** ([script 08](db/parcial1_08_funciones_procedimientos_plpgsql.sql)):
 
 | Objeto | Tipo | Qué hace |
 | :--- | :--- | :--- |
@@ -76,7 +78,7 @@ CALL sp_refrescar_facturacion_categoria_mes();
 
 | Qué | Cómo |
 | :--- | :--- |
-| Unidad 1 (experimentos originales) | Dos sesiones `psql` en paralelo sobre `foodstore_desarrollo`, con capturas ([`capturas/`](../capturas)) y consulta a `pg_stat_activity` para ver la espera por bloqueo |
+| Unidad 1 (experimentos originales) | Dos sesiones `psql` en paralelo sobre `foodstore_desarrollo`, con capturas ([`capturas/`](capturas)) y consulta a `pg_stat_activity` para ver la espera por bloqueo |
 | Unidades 2 y 3 (mediciones) | `EXPLAIN ANALYZE` sobre la carga masiva; **mediana de 3 ejecuciones** por consulta, antes y después; se compara solo *Execution Time*, no el *cost* |
 | Scripts 08, 09 y 10 y consultas nuevas del 05 | Se ejecutaron completos, en orden, en una **instancia temporal de PostgreSQL 17.11** (no se usó `foodstore` ni `foodstore_desarrollo`). Cada script lleva comentarios `-- Esperado:` con el resultado correcto y los pasos que deben fallar están marcados `ERROR ESPERADO`. Se creó la base con los scripts 01 → 02 → 03 → 06 → 07 → 08 y, para el volumen, con 04. La herramienta usada para esta tanda fue Claude Code (ver sección 5) |
 | Reproducción por el docente | Crear la copia (`createdb -T foodstore foodstore_desarrollo`), ejecutar los scripts 01 → 10 en orden. Los scripts 09 y 10 limpian sus datos de prueba (prefijos `TPI_TX` / `TPI_BL`) |
@@ -96,7 +98,7 @@ CALL sp_refrescar_facturacion_categoria_mes();
 | `sp_crear_pedido` con el mismo producto repetido (3 + 2 unidades) | Un único renglón de 5 unidades (respeta `UNIQUE (pedido_id, producto_id)`) |
 | Coherencia de `pedidos.total` tras la carga masiva (`WHERE total <> fn_total_pedido(id)`) | **0 filas** sobre 200.000 pedidos (1,6 s) |
 
-### 3.2 Transacciones y concurrencia ([script 09](../db/09_transacciones.sql))
+### 3.2 Transacciones y concurrencia ([script 09](db/parcial1_09_transacciones.sql))
 
 | Prueba | Resultado observado |
 | :--- | :--- |
@@ -106,9 +108,9 @@ CALL sp_refrescar_facturacion_categoria_mes();
 | Cancelación (`PENDIENTE → CONFIRMADO → CANCELADO`) | Stock repuesto: A 10, B 2 |
 | Niveles de aislamiento | `read committed` por defecto; `BEGIN ISOLATION LEVEL REPEATABLE READ` y `SERIALIZABLE` verificados con `SHOW transaction_isolation` |
 | **Dos sesiones, última unidad de stock** | Sesión A: `BEGIN; CALL sp_crear_pedido(…)` y espera 4 s. Sesión B lanza el mismo `CALL` 1,5 s después y queda **bloqueada** (`pg_stat_activity`: `wait_event_type = Lock`, `wait_event = transactionid`). A hace `COMMIT`; B se destraba, relee el stock y falla con `Stock insuficiente … disponible 0`. Resultado: stock 0 y **un solo pedido** (no hay sobreventa) |
-| Experimentos originales ([informe](informes/informe_concurrencia.md)) | Lectura no repetible y fantasma ocurren en `READ COMMITTED` y desaparecen en `REPEATABLE READ`; `SELECT … FOR UPDATE` produce espera por bloqueo |
+| Experimentos originales ([informe](docs/informes/parcial1_informe_concurrencia.md)) | Lectura no repetible y fantasma ocurren en `READ COMMITTED` y desaparecen en `REPEATABLE READ`; `SELECT … FOR UPDATE` produce espera por bloqueo |
 
-### 3.3 Borrado lógico ([script 10](../db/10_borrado_logico.sql))
+### 3.3 Borrado lógico ([script 10](db/parcial1_10_borrado_logico.sql))
 
 | Prueba | Resultado observado |
 | :--- | :--- |
@@ -135,23 +137,23 @@ Todas las cifras son *Execution Time* de `EXPLAIN ANALYZE` y están tomadas de l
 
 | Consulta | Cambio aplicado | Antes | Después | Mejora | Decisión | Fuente |
 | :--- | :--- | ---: | ---: | :---: | :--- | :--- |
-| Historial de pedidos por cliente | `idx_pedidos_historial_cliente (cliente_id, fecha DESC) INCLUDE (…) WHERE eliminado = FALSE` | 19,577 ms | 0,110 ms | ≈ 178 × | Aceptado | [Informe de optimización](../Informes_tps/Informe_optimizacion_consultas_indices.md) |
+| Historial de pedidos por cliente | `idx_pedidos_historial_cliente (cliente_id, fecha DESC) INCLUDE (…) WHERE eliminado = FALSE` | 19,577 ms | 0,110 ms | ≈ 178 × | Aceptado | [Informe de optimización](Informes_tps/Parcial1_Informe_optimizacion_consultas_indices.md) |
 | Reporte de cobranza por forma de pago y estado | `idx_pedidos_cobranza (forma_pago, estado) INCLUDE (total) WHERE eliminado = FALSE` | 41,055 ms | 32,989 ms | 1,24 × | Aceptado (Parallel Seq Scan → Parallel Index Only Scan) | ídem |
 | Ranking de ventas por producto | 2 índices (`pedidos`, `detalle_pedido`) | 773,753 ms | 381,783 ms | No atribuible al índice | **Descartados**: el planner no los usa (la baja fue efecto caché) | ídem |
-| Facturación por categoría y mes | Vista materializada `mv_facturacion_categoria_mes` | 1.364,31 ms | 0,19 ms | ≈ 7.180 × | Aceptada, con desfase de datos y política de `REFRESH` | [Benchmark](informes/benchmark_resultados.md), [política](informes/politica_refresh.md) |
-| Productos por categoría con filtro de precio y orden | `idx_productos_q1_cat_precio (categoria_id, precio DESC) INCLUDE (nombre, stock) WHERE eliminado = FALSE AND disponible = TRUE` | 18,546 ms | 0,283 ms | ≈ 65,5 × | Aceptado | [`TP3 (docx)`](../Informes_tps/TP3_Semana3_Unidad2_TERMINADO.docx) |
+| Facturación por categoría y mes | Vista materializada `mv_facturacion_categoria_mes` | 1.364,31 ms | 0,19 ms | ≈ 7.180 × | Aceptada, con desfase de datos y política de `REFRESH` | [Benchmark](docs/informes/parcial1_benchmark_resultados.md), [política](docs/informes/parcial1_politica_refresh.md) |
+| Productos por categoría con filtro de precio y orden | `idx_productos_q1_cat_precio (categoria_id, precio DESC) INCLUDE (nombre, stock) WHERE eliminado = FALSE AND disponible = TRUE` | 18,546 ms | 0,283 ms | ≈ 65,5 × | Aceptado | [`TP3 (docx)`](Informes_tps/TP3_Semana3_Unidad2_TERMINADO.docx) |
 | Historial de pedidos por cliente (TP3, índice simple) | `idx_pedidos_cliente (cliente_id)` | 74,734 ms | 0,408 ms | ≈ 183 × | Aceptado | ídem |
 | Ranking de categorías (TP3) | `idx_productos_categoria` parcial | 26,965 ms | 48,385 ms | Empeora | **Descartado**: el índice no se usó | ídem |
-| Productos más caros que el promedio de su categoría | Reescritura: subconsulta correlacionada → CTE con un único `AVG` por categoría + índice parcial `(categoria_id, precio)` | 174.947,862 ms | 58,058 ms | ≈ 3.000 × | Aceptado (Nested Loop → Hash Join) | [`TP4 (docx)`](../Informes_tps/TP4_Semana4_Unidad2_Practica.docx) |
+| Productos más caros que el promedio de su categoría | Reescritura: subconsulta correlacionada → CTE con un único `AVG` por categoría + índice parcial `(categoria_id, precio)` | 174.947,862 ms | 58,058 ms | ≈ 3.000 × | Aceptado (Nested Loop → Hash Join) | [`TP4 (docx)`](Informes_tps/TP4_Semana4_Unidad2_Practica.docx) |
 | Ranking de productos por categoría | Reescritura: subconsulta correlacionada → `RANK() OVER (PARTITION BY …)` + índice `(categoria_id, precio DESC, id)` | 101.891,491 ms | 67,771 ms | ≈ 1.500 × | Aceptado (→ Merge Join) | ídem |
 
-**Costo de escritura de los índices:** la prueba de inserción de 500 filas en `detalle_pedido` dio 16 ms sin índice y 15 ms con índice (diferencia dentro del ruido). Con un lote de **50.000 filas** y mediana de 5 corridas el `INSERT` tardó **973,4 ms sin** `idx_detalle_pedido_agg_ventas` y **1052,1 ms con** él: el índice cuesta **≈ 79 ms (≈ 8 %)** por lote. Medición en una instancia temporal de PostgreSQL 17.11 con la carga masiva completa; detalle y entorno en el [informe de optimización](../Informes_tps/Informe_optimizacion_consultas_indices.md). Como ese índice no lo usa la consulta de ranking, se decide eliminarlo.
+**Costo de escritura de los índices:** la prueba de inserción de 500 filas en `detalle_pedido` dio 16 ms sin índice y 15 ms con índice (diferencia dentro del ruido). Con un lote de **50.000 filas** y mediana de 5 corridas el `INSERT` tardó **973,4 ms sin** `idx_detalle_pedido_agg_ventas` y **1052,1 ms con** él: el índice cuesta **≈ 79 ms (≈ 8 %)** por lote. Medición en una instancia temporal de PostgreSQL 17.11 con la carga masiva completa; detalle y entorno en el [informe de optimización](Informes_tps/Parcial1_Informe_optimizacion_consultas_indices.md). Como ese índice no lo usa la consulta de ranking, se decide eliminarlo.
 
 ---
 
 ## 5. Uso de otras herramientas de IA
 
-Las herramientas indicadas por la cátedra (OpenCode con distintos modelos y Kiro) se declaran, una por una, en las DUIA de cada parte: [`duia_parte1.md`](duia/duia_parte1.md), [`duia_parte2.md`](duia/duia_parte2.md), [`duia_parteB_vistas.md`](duia/duia_parteB_vistas.md), [`duia_vista_materializada.md`](duia/duia_vista_materializada.md) y [`duia_tp5.md`](duia/duia_tp5.md). Decisiones destacadas de esas partes:
+Las herramientas indicadas por la cátedra (OpenCode con distintos modelos y Kiro) se declaran, una por una, en las DUIA de cada parte: [`duia_parte1.md`](docs/duia/duia_parte1.md), [`duia_parte2.md`](docs/duia/duia_parte2.md), [`duia_parteB_vistas.md`](docs/duia/duia_parteB_vistas.md), [`duia_vista_materializada.md`](docs/duia/duia_vista_materializada.md) y [`duia_tp5.md`](docs/duia/duia_tp5.md). Decisiones destacadas de esas partes:
 
 | Parte | Aceptado | Descartado / corregido |
 | :--- | :--- | :--- |
@@ -160,7 +162,7 @@ Las herramientas indicadas por la cátedra (OpenCode con distintos modelos y Kir
 | TP5, consulta 3 | Índice compuesto parcial | La IA anunció Index Only Scan y el plan real fue Bitmap Heap Scan + Sort: se agregó `id` al `INCLUDE`; índice simple sobre `cliente_id` descartado por redundante |
 | Vistas | Versión de OpenCode como definitiva | La versión propia se conservó como evidencia; ambas se verificaron con `EXCEPT` |
 
-**Herramienta adicional — Claude Code (Anthropic, modelo Claude Sonnet 5.5):** **no figura entre las indicadas por la cátedra.** Se usó para atender la devolución del docente: reorganizar y renombrar los archivos, redactar el modelo ER, el paso a relacional y la normalización, desarrollar las funciones y procedimientos PL/pgSQL, los scripts de transacciones y borrado lógico, las consultas nuevas del script 05 y este informe. Declaración completa en [`duia_tpi_entrega1.md`](duia/duia_tpi_entrega1.md). Decisiones tomadas:
+**Herramienta adicional — Claude Code (Anthropic, modelo Claude Sonnet 5.5):** **no figura entre las indicadas por la cátedra.** Se usó para atender la devolución del docente: reorganizar y renombrar los archivos, redactar el modelo ER, el paso a relacional y la normalización, desarrollar las funciones y procedimientos PL/pgSQL, los scripts de transacciones y borrado lógico, las consultas nuevas del script 05 y este informe. Declaración completa en [`duia_parcial1_correcciones.md`](docs/duia/duia_parcial1_correcciones.md). Decisiones tomadas:
 
 * **Aceptado:** procedimientos sin `COMMIT` interno (la atomicidad la da el llamador); reserva de stock al crear el pedido y devolución al cancelar; bloqueo `FOR UPDATE` en orden de `id`.
 * **Descartado:** duplicar en el procedimiento la validación de transiciones (ya la hace el trigger); modificar el esquema entregado para cambiar `UNIQUE` por un índice único parcial (se demuestra y se deja a decisión del equipo); presentar el esquema como BCNF sin aclarar que `subtotal` y `total` son atributos derivados.

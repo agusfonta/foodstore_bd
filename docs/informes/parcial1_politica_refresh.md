@@ -1,5 +1,7 @@
 # Política de REFRESH para `mv_facturacion_categoria_mes`
 
+> **Evidencia del Parcial 1 — Objetivo 6 (vista materializada).** Ver [`Informe_Parcial_1.md`](../../Informe_Parcial_1.md).
+
 ## 1. Naturaleza del reporte y tolerancia al desfase
 
 El reporte "Facturación por categoría y mes" agrega ventas históricas agrupadas
@@ -165,5 +167,5 @@ Si hay un dashboard, mostrar un texto del tipo:
 | **Prompt utilizado** | "Documentar con qué frecuencia debería ejecutarse el REFRESH MATERIALIZED VIEW dado el uso esperado del reporte, y qué implica para los usuarios que el dato no se actualice en cada REFRESH." |
 | **Qué generó** | Este documento completo: análisis de zonas estables vs. dinámicas, tabla de frecuencias por escenario, tabla de impacto por perfil de usuario, casos de uso no aptos para la vista, y snippet de control de marca de tiempo. |
 | **Qué se aceptó** | Estructura y contenido completo. |
-| **Qué se modificó o descartó** | Ninguna modificación. El análisis está fundamentado en la naturaleza del reporte (datos históricos mensuales) y en los resultados del benchmark documentado en `benchmark_resultados.md`. |
-| **Verificación realizada** | El análisis es conceptual/documental; no requiere ejecución de SQL. Los tiempos de refresco citados (~1 364 ms) son los medidos en `benchmark_resultados.md`. |
+| **Qué se modificó o descartó** | Ninguna modificación. El análisis está fundamentado en la naturaleza del reporte (datos históricos mensuales) y en los resultados del benchmark documentado en `parcial1_benchmark_resultados.md`. |
+| **Verificación realizada** | El análisis es conceptual/documental; no requiere ejecución de SQL. Los tiempos de refresco citados (~1 364 ms) son los medidos en `parcial1_benchmark_resultados.md`. |

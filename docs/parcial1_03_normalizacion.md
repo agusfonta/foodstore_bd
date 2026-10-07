@@ -1,8 +1,8 @@
 # 03 — Normalización hasta 3FN / BCNF
 
-> **TPI «Food Store» — Primera entrega parcial · Objetivo 3 de la consigna:**
+> **TPI «Food Store» — PARCIAL 1 (primera entrega parcial) · Objetivo 3 de la consigna:**
 > *Normalización hasta 3FN/BCNF, con la justificación de las dependencias funcionales correspondientes.*
-> Parte de: [`02_modelo_relacional.md`](02_modelo_relacional.md) · Implementación: [`db/01_ddl_schema.sql`](../db/01_ddl_schema.sql)
+> Parte de: [`parcial1_02_modelo_relacional.md`](parcial1_02_modelo_relacional.md) · Implementación: [`db/parcial1_01_ddl_schema.sql`](../db/parcial1_01_ddl_schema.sql)
 
 Notación: `X → Y` = «X determina funcionalmente a Y». `{ … }` = grupo repetitivo. Las columnas de auditoría y borrado lógico se tratan en la sección 6.
 
@@ -100,7 +100,7 @@ Dos atributos son **calculables** a partir de otros; estrictamente, mantenerlos 
 | Atributo | Dependencia | Por qué se guarda | Cómo se protege |
 | :--- | :--- | :--- | :--- |
 | `detalle_pedido.subtotal` | `subtotal = cantidad × precio_unitario` (DF8; dentro de la misma fila) | Evita multiplicar en cada reporte y permite índices *covering* (`INCLUDE (cantidad, subtotal)`) y la vista materializada de facturación | `CHECK chk_detalle_subtotal_coherente (subtotal = cantidad * precio_unitario)` — la base **rechaza** una fila incoherente |
-| `pedidos.total` | `total = Σ subtotal` de sus renglones (DF9; entre tablas) | Los reportes de cobranza y ranking de clientes (`SUM(total)`) no necesitan unir con `detalle_pedido` | El único camino de alta/actualización previsto es `sp_crear_pedido` ([`08_funciones_procedimientos_plpgsql.sql`](../db/08_funciones_procedimientos_plpgsql.sql)), que calcula `total` en la misma transacción que inserta los renglones. Auditable con `fn_total_pedido()` |
+| `pedidos.total` | `total = Σ subtotal` de sus renglones (DF9; entre tablas) | Los reportes de cobranza y ranking de clientes (`SUM(total)`) no necesitan unir con `detalle_pedido` | El único camino de alta/actualización previsto es `sp_crear_pedido` ([`parcial1_08_funciones_procedimientos_plpgsql.sql`](../db/parcial1_08_funciones_procedimientos_plpgsql.sql)), que calcula `total` en la misma transacción que inserta los renglones. Auditable con `fn_total_pedido()` |
 
 Consulta de auditoría de coherencia de `total` (debe devolver 0 filas):
 
@@ -111,13 +111,13 @@ WHERE p.total <> fn_total_pedido(p.id)
   AND p.eliminado = FALSE;
 ```
 
-> **Costo asumido:** `pedidos.total` no está protegido por una restricción declarativa (un `CHECK` no puede mirar otra tabla); depende de que los cambios pasen por el procedimiento. Si se quisiera blindar, la alternativa sería un trigger sobre `detalle_pedido` que recalcule el total. Si el curso exigiera 3FN estricta, bastaría con eliminar ambas columnas y reemplazarlas por vistas que calculen `cantidad × precio_unitario` y `SUM(...)`; se perderían los índices *covering* sobre esas columnas y el `SUM(total)` directo sobre `pedidos` que usan los reportes (ver [`Informes_tps/Informe_optimizacion_consultas_indices.md`](../Informes_tps/Informe_optimizacion_consultas_indices.md)).
+> **Costo asumido:** `pedidos.total` no está protegido por una restricción declarativa (un `CHECK` no puede mirar otra tabla); depende de que los cambios pasen por el procedimiento. Si se quisiera blindar, la alternativa sería un trigger sobre `detalle_pedido` que recalcule el total. Si el curso exigiera 3FN estricta, bastaría con eliminar ambas columnas y reemplazarlas por vistas que calculen `cantidad × precio_unitario` y `SUM(...)`; se perderían los índices *covering* sobre esas columnas y el `SUM(total)` directo sobre `pedidos` que usan los reportes (ver [`Informes_tps/Parcial1_Informe_optimizacion_consultas_indices.md`](../Informes_tps/Parcial1_Informe_optimizacion_consultas_indices.md)).
 
 ## 6. Otras observaciones sobre dependencias
 
 | Atributo(s) | Observación |
 | :--- | :--- |
-| `eliminado` / `deleted_at` | `deleted_at IS NOT NULL ⇔ eliminado = TRUE` es una redundancia intencional del **borrado lógico**: la bandera booleana permite índices parciales simples (`WHERE eliminado = FALSE`) y `deleted_at` registra **cuándo**. Los procedimientos `sp_baja_logica_*` escriben ambas a la vez. Ver [`db/10_borrado_logico.sql`](../db/10_borrado_logico.sql) |
+| `eliminado` / `deleted_at` | `deleted_at IS NOT NULL ⇔ eliminado = TRUE` es una redundancia intencional del **borrado lógico**: la bandera booleana permite índices parciales simples (`WHERE eliminado = FALSE`) y `deleted_at` registra **cuándo**. Los procedimientos `sp_baja_logica_*` escriben ambas a la vez. Ver [`db/parcial1_10_borrado_logico.sql`](../db/parcial1_10_borrado_logico.sql) |
 | `clientes.rol` | Texto libre sin dependencias propias (`rol` no determina ningún otro atributo), por lo que no requiere tabla aparte. Si los roles tuvieran atributos (permisos, descripción) habría que extraer una relación `roles` para mantener 3FN |
 | `pedidos.estado`, `pedidos.forma_pago` | Dominios cerrados modelados como `ENUM`, no como columnas libres: no hay redundancia ni anomalías de escritura |
 | `productos.precio` vs. `detalle_pedido.precio_unitario` | Atributos distintos: precio **vigente** vs. precio **histórico de la venta** (ver sección 3). No es redundancia |

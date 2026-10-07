@@ -1,5 +1,7 @@
 # Informe de Optimización de Consultas SQL e Índices
 
+> **Evidencia del Parcial 1 — Unidad 2 (optimización de consultas) y Unidad 3 (índices).** Ver [`Informe_Parcial_1.md`](../Informe_Parcial_1.md), sección 4.
+
 ## Criterio de medición
 
 * Todas las mediciones se hacen con `EXPLAIN ANALYZE` sobre la copia de trabajo de foodstore.
@@ -239,7 +241,7 @@ Con 500 filas y una sola ejecución, 16 ms contra 15 ms está dentro del ruido d
 | **CON** `idx_detalle_pedido_agg_ventas` | 50.000 | **1052,1 ms** (corridas: 1074,4 · 1057,6 · 1052,1 · 1011,9 · 1037,6) |
 | **Costo del índice** | | **+78,7 ms (≈ +8,1 %)**, unos 1,6 µs por fila insertada |
 
-> **Entorno de esta medición:** PostgreSQL 17.11 en una instancia temporal (Windows 11, `shared_buffers = 128MB`), con la carga masiva del script `db/04_dml_carga_masiva.sql` (200.000 pedidos, 600.000 renglones) y los índices de `db/03_ddl_indices.sql`. Se ejecutó 5 veces cada bloque 3.a / 3.b de `db/anexos_tps/tp5_mediciones_pendientes.sql` (alternando SIN/CON, cada uno dentro de `BEGIN … ROLLBACK`) y se informa la mediana del *Execution Time* del `EXPLAIN ANALYZE` del `INSERT`. En el escenario SIN solo se quita este índice: `detalle_pedido` conserva su PK, el `UNIQUE (pedido_id, producto_id)` e `idx_detalle_pedido_pedido_eliminado`, y cada lote también paga las FK y los índices de `pedidos`; por eso el tiempo base ronda 1 s. Medición realizada con Claude Code (ver DUIA).
+> **Entorno de esta medición:** PostgreSQL 17.11 en una instancia temporal (Windows 11, `shared_buffers = 128MB`), con la carga masiva del script `db/parcial1_04_dml_carga_masiva.sql` (200.000 pedidos, 600.000 renglones) y los índices de `db/parcial1_03_ddl_indices.sql`. Se ejecutó 5 veces cada bloque 3.a / 3.b de `db/anexos_tps/tp5_mediciones_pendientes.sql` (alternando SIN/CON, cada uno dentro de `BEGIN … ROLLBACK`) y se informa la mediana del *Execution Time* del `EXPLAIN ANALYZE` del `INSERT`. En el escenario SIN solo se quita este índice: `detalle_pedido` conserva su PK, el `UNIQUE (pedido_id, producto_id)` e `idx_detalle_pedido_pedido_eliminado`, y cada lote también paga las FK y los índices de `pedidos`; por eso el tiempo base ronda 1 s. Medición realizada con Claude Code (ver DUIA).
 
 ### CONCLUSIÓN
 

@@ -109,7 +109,7 @@ ORDER BY total_vendido DESC;
 
 
 -- =============================================================================
--- TPI «Food Store» - Primera entrega parcial - Objetivo 5 de la consigna:
+-- TPI «Food Store» - PARCIAL 1 (primera entrega parcial) - Objetivo 5 de la consigna:
 -- "DML y consultas: uso de JOIN, funciones de agregacion, subconsultas,
 --  GROUP BY/HAVING y funciones de ventana."
 -- Las consultas de arriba cubren JOIN, SUM/COUNT/AVG, GROUP BY, subconsulta
@@ -149,7 +149,7 @@ ORDER BY subtotal_promedio DESC;
 -- -----------------------------------------------------------------------------
 -- Subconsulta con NOT EXISTS: productos vigentes que nunca se vendieron.
 -- (Se usa NOT EXISTS y no NOT IN: NOT IN devuelve 0 filas si la subconsulta
---  tiene algun NULL, ver docs/informes/ejercicio_lectura_critica.md.)
+--  tiene algun NULL, ver docs/informes/parcial1_ejercicio_lectura_critica.md.)
 -- -----------------------------------------------------------------------------
 SELECT pr.id, pr.nombre, pr.stock
 FROM productos pr

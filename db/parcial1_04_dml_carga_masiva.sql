@@ -13,7 +13,7 @@
 --       pg_dump -U postgres -h localhost -p 5432 -d foodstore_desarrollo -F c -b -v -f ".\backups\respaldo_completo_$(Get-Date -Format 'yyyyMMdd_HHmmss').backup"
 --   - Ejecutar DENTRO DE TRANSACCION de prueba primero:
 --       BEGIN;
---       \i 04_dml_carga_masiva.sql
+--       \i parcial1_04_dml_carga_masiva.sql
 --       -- verificaciones de conteos/restricciones (ver pie del archivo)
 --       ROLLBACK;  -- solo COMMIT tras verificacion 100% correcta
 --   - No incluye BEGIN/COMMIT: los envuelve el caller

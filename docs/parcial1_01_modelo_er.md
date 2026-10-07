@@ -1,9 +1,9 @@
 # 01 — Modelo Entidad-Relación (ER) de Food Store
 
-> **TPI «Food Store» — Primera entrega parcial · Objetivo 1 de la consigna:**
+> **TPI «Food Store» — PARCIAL 1 (primera entrega parcial) · Objetivo 1 de la consigna:**
 > *Modelo ER (entidades, atributos, claves, cardinalidad, participación).*
-> Motor de referencia: PostgreSQL 16+ · Implementación: [`db/01_ddl_schema.sql`](../db/01_ddl_schema.sql)
-> Siguiente paso: [`02_modelo_relacional.md`](02_modelo_relacional.md) → [`03_normalizacion.md`](03_normalizacion.md)
+> Motor de referencia: PostgreSQL 16+ · Implementación: [`db/parcial1_01_ddl_schema.sql`](../db/parcial1_01_ddl_schema.sql)
+> Siguiente paso: [`parcial1_02_modelo_relacional.md`](parcial1_02_modelo_relacional.md) → [`parcial1_03_normalizacion.md`](parcial1_03_normalizacion.md)
 
 ## 1. Descripción del dominio
 
@@ -55,7 +55,7 @@ Notación: **PK** = clave primaria · **CC** = clave candidata (restricción `UN
 | fecha | fecha y hora con zona (`TIMESTAMPTZ`) | | Por defecto, el momento de creación |
 | estado | `ENUM estado_pedido` = PENDIENTE, CONFIRMADO, TERMINADO, CANCELADO | | Transiciones controladas por trigger |
 | forma_pago | `ENUM forma_pago` = TARJETA, TRANSFERENCIA, EFECTIVO | | |
-| total | decimal(12,2) ≥ 0 | | *(derivado)* = Σ subtotal de sus renglones; se guarda por rendimiento (ver [normalización](03_normalizacion.md)) |
+| total | decimal(12,2) ≥ 0 | | *(derivado)* = Σ subtotal de sus renglones; se guarda por rendimiento (ver [normalización](parcial1_03_normalizacion.md)) |
 | cliente_id | entero | **FK** → CLIENTE | Implementa la relación `REALIZA` |
 | auditoría / borrado lógico | | | ver 2.6 |
 
@@ -73,7 +73,7 @@ Identificador de cada ocurrencia: el par (pedido, producto) — una línea por p
 
 ### 2.6 Atributos comunes de auditoría y borrado lógico
 
-Las entidades `CATEGORIA`, `PRODUCTO`, `CLIENTE` y `PEDIDO` tienen: `eliminado` (booleano, por defecto `FALSE`), `created_at`, `updated_at` y `deleted_at` (`TIMESTAMPTZ`; `deleted_at` es `NULL` mientras el registro esté vigente). Ver [`db/10_borrado_logico.sql`](../db/10_borrado_logico.sql).
+Las entidades `CATEGORIA`, `PRODUCTO`, `CLIENTE` y `PEDIDO` tienen: `eliminado` (booleano, por defecto `FALSE`), `created_at`, `updated_at` y `deleted_at` (`TIMESTAMPTZ`; `deleted_at` es `NULL` mientras el registro esté vigente). Ver [`db/parcial1_10_borrado_logico.sql`](../db/parcial1_10_borrado_logico.sql).
 
 ## 3. Diagrama ER
 
@@ -117,7 +117,7 @@ erDiagram
     }
 ```
 
-> La relación `CONTIENE` es **N:M con atributos propios** (`cantidad`, `precio_unitario`, `subtotal`); por eso en el paso al modelo relacional se resuelve con la tabla intermedia `detalle_pedido` (ver [`02_modelo_relacional.md`](02_modelo_relacional.md)). Los atributos de auditoría / borrado lógico (2.6) no se dibujan para no saturar el diagrama.
+> La relación `CONTIENE` es **N:M con atributos propios** (`cantidad`, `precio_unitario`, `subtotal`); por eso en el paso al modelo relacional se resuelve con la tabla intermedia `detalle_pedido` (ver [`parcial1_02_modelo_relacional.md`](parcial1_02_modelo_relacional.md)). Los atributos de auditoría / borrado lógico (2.6) no se dibujan para no saturar el diagrama.
 
 ### Diagrama del TP1 (versión original del equipo)
 
@@ -153,8 +153,8 @@ Las claves sustitutas son `BIGINT GENERATED ALWAYS AS IDENTITY` (estándar SQL, 
 
 | Regla | Dónde se implementa |
 | :--- | :--- |
-| Precio, stock, total, cantidad, subtotal no negativos; cantidad > 0 | `CHECK` en [`01_ddl_schema.sql`](../db/01_ddl_schema.sql) |
-| `subtotal = cantidad × precio_unitario` | `CHECK chk_detalle_subtotal_coherente` en [`02_reglas_negocio_check_unique_triggers.sql`](../db/02_reglas_negocio_check_unique_triggers.sql) |
+| Precio, stock, total, cantidad, subtotal no negativos; cantidad > 0 | `CHECK` en [`parcial1_01_ddl_schema.sql`](../db/parcial1_01_ddl_schema.sql) |
+| `subtotal = cantidad × precio_unitario` | `CHECK chk_detalle_subtotal_coherente` en [`parcial1_02_reglas_negocio_check_unique_triggers.sql`](../db/parcial1_02_reglas_negocio_check_unique_triggers.sql) |
 | Un producto no se repite dentro de un pedido | `UNIQUE (pedido_id, producto_id)` |
 | Transiciones válidas de estado del pedido | Trigger `trg_pedidos_transicion_estado` (script 02) |
 | No dar de baja un cliente con pedidos PENDIENTE/CONFIRMADO | Trigger `trg_clientes_baja_logica` (script 02) |

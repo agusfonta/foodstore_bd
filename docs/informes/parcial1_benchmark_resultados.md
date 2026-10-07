@@ -1,5 +1,7 @@
 # Benchmark: Consulta Original vs Vista Materializada
 
+> **Evidencia del Parcial 1 — Objetivos 6 y de optimización (vista materializada).** Ver [`Informe_Parcial_1.md`](../../Informe_Parcial_1.md).
+
 ## Contexto
 
 Reporte medido: **Facturación por categoría y mes** (`mv_facturacion_categoria_mes`).

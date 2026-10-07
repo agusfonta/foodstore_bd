@@ -1,7 +1,7 @@
 -- =============================================================================
 -- FOODSTORE - Transacciones: atomicidad, COMMIT, ROLLBACK, SAVEPOINT,
 --             niveles de aislamiento y control de concurrencia
--- TPI «Food Store» - Primera entrega parcial (Unidad 1)
+-- TPI «Food Store» - PARCIAL 1 (primera entrega parcial) (Unidad 1)
 -- Objetivo 8 de la consigna: "Transacciones: atomicidad, COMMIT, ROLLBACK,
 --                             niveles de aislamiento y control de concurrencia"
 -- Motor: PostgreSQL 16+ (probado en 17)
@@ -10,7 +10,7 @@
 --             (foodstore_desarrollo). NUNCA correr sobre la base original.
 --
 -- COMO EJECUTARLO
---   psql  : psql -U postgres -d foodstore_desarrollo -f db/09_transacciones.sql
+--   psql  : psql -U postgres -d foodstore_desarrollo -f db/parcial1_09_transacciones.sql
 --   DBeaver: Alt+X (script). Los pasos marcados "ERROR ESPERADO" fallan a
 --            proposito; en DBeaver elegir "ignorar errores y continuar".
 --
@@ -20,7 +20,7 @@
 --
 -- La evidencia de los experimentos con DOS sesiones simultaneas (lectura no
 -- repetible, lectura fantasma y espera por bloqueo) esta en
--- docs/informes/informe_concurrencia.md. La seccion 6 de este script agrega la prueba de
+-- docs/informes/parcial1_informe_concurrencia.md. La seccion 6 de este script agrega la prueba de
 -- concurrencia sobre sp_crear_pedido (ultima unidad de stock).
 -- =============================================================================
 
@@ -32,7 +32,7 @@
 BEGIN;
 
 INSERT INTO categorias (nombre, descripcion)
-VALUES ('TPI_TX_Categoria', 'Datos de prueba de 09_transacciones.sql');
+VALUES ('TPI_TX_Categoria', 'Datos de prueba de parcial1_09_transacciones.sql');
 
 INSERT INTO clientes (nombre, apellido, mail, celular, contrasenia, rol)
 VALUES ('TPI_TX', 'Cliente', 'tpi_tx@test.com', '000000', 'hash_de_prueba', 'CLIENTE');
@@ -169,7 +169,7 @@ BEGIN ISOLATION LEVEL SERIALIZABLE;
 SHOW transaction_isolation;              -- serializable
 COMMIT;
 
--- Diferencias demostradas con dos sesiones en docs/informes/informe_concurrencia.md:
+-- Diferencias demostradas con dos sesiones en docs/informes/parcial1_informe_concurrencia.md:
 --   Exp. 1 lectura no repetible : ocurre en READ COMMITTED, no en REPEATABLE READ
 --   Exp. 2 lectura fantasma     : ocurre en READ COMMITTED, no en REPEATABLE READ
 --   Exp. 3 espera por bloqueo   : UPDATE vs UPDATE sobre la misma fila (lock de fila)
@@ -207,7 +207,7 @@ COMMIT;
 --       FROM pg_stat_activity WHERE wait_event_type = 'Lock';
 --    Resultado real obtenido: A hizo COMMIT a los ~4 s; B quedo bloqueada con
 --    wait_event_type = Lock / wait_event = transactionid y al destrabarse fallo con
---    'Stock insuficiente ... disponible 0'. Detalle en docs/informe_tecnico_tpi.md.
+--    'Stock insuficiente ... disponible 0'. Detalle en Informe_Parcial_1.md.
 -- =============================================================================
 
 

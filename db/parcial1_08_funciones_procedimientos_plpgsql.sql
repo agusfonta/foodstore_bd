@@ -1,18 +1,18 @@
 -- =============================================================================
 -- FOODSTORE - Funciones y procedimientos almacenados en PL/pgSQL
--- TPI «Food Store» - Primera entrega parcial (Unidades 1, 2 y 3)
+-- TPI «Food Store» - PARCIAL 1 (primera entrega parcial) (Unidades 1, 2 y 3)
 -- Objetivo 6 de la consigna: "Vistas, funciones y procedimientos almacenados
 --                             desarrollados en PL/pgSQL"
 -- Motor: PostgreSQL 16+ (probado en 17)
 -- =============================================================================
 -- ORDEN DE EJECUCION (sobre la COPIA de trabajo foodstore_desarrollo):
---   01_ddl_schema.sql -> 02_reglas_negocio_check_unique_triggers.sql -> ...
---   -> 08_funciones_procedimientos_plpgsql.sql (este archivo)
+--   parcial1_01_ddl_schema.sql -> parcial1_02_reglas_negocio_check_unique_triggers.sql -> ...
+--   -> parcial1_08_funciones_procedimientos_plpgsql.sql (este archivo)
 -- Protocolo de seguridad (ver protocolo_seguridad.md): no correr sobre la base
 -- original, respaldo previo con pg_dump y primera corrida dentro de BEGIN/ROLLBACK.
 --
 -- Este archivo es idempotente (CREATE OR REPLACE): se puede volver a ejecutar.
--- Las PRUEBAS con CALL estan en 09_transacciones.sql y 10_borrado_logico.sql.
+-- Las PRUEBAS con CALL estan en parcial1_09_transacciones.sql y parcial1_10_borrado_logico.sql.
 --
 -- Contenido
 --   FUNCIONES   (se invocan con SELECT)
@@ -35,7 +35,7 @@
 --     BEGIN ... COMMIT explicito el llamador decide cuando confirmar.
 --   * El stock se RESERVA al crear el pedido y se DEVUELVE al cancelarlo.
 --   * El control de concurrencia es pesimista: SELECT ... FOR UPDATE sobre las
---     filas de productos / pedidos que se van a modificar (ver docs/informes/informe_concurrencia.md).
+--     filas de productos / pedidos que se van a modificar (ver docs/informes/parcial1_informe_concurrencia.md).
 --     Los productos se bloquean siempre en orden de id para evitar deadlocks
 --     entre dos pedidos que compran los mismos productos en distinto orden.
 --   * Borrado logico: se marcan juntos eliminado = TRUE y deleted_at = now().
@@ -338,7 +338,7 @@ $$;
 -- sp_refrescar_facturacion_categoria_mes
 --   Refresca la vista materializada del script 07 sin bloquear lecturas
 --   (REFRESH ... CONCURRENTLY exige el indice UNIQUE uix_mv_facturacion_categoria_mes).
---   Politica de frecuencia: docs/informes/politica_refresh.md
+--   Politica de frecuencia: docs/informes/parcial1_politica_refresh.md
 -- -----------------------------------------------------------------------------
 CREATE OR REPLACE PROCEDURE sp_refrescar_facturacion_categoria_mes()
 LANGUAGE plpgsql

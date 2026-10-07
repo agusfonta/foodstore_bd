@@ -1,11 +1,13 @@
 # Bitácora de verificación de equivalencia — Parte B (complemento)
 
-> No modifica `docs/informes/informe_equivalencia_vistas.md`. Lo complementa con el entregable
-> exigido (`db/06_vistas.sql`), la trazabilidad de specs y la planilla para pegar
+> **Evidencia del Parcial 1 — Objetivo 6 (vistas).** Ver [`Informe_Parcial_1.md`](../../Informe_Parcial_1.md).
+
+> No modifica `docs/informes/parcial1_informe_equivalencia_vistas.md`. Lo complementa con el entregable
+> exigido (`db/parcial1_06_vistas.sql`), la trazabilidad de specs y la planilla para pegar
 > resultados reales. La equivalencia de filas ya fue analizada estáticamente
 > (JOIN y WHERE idénticos); falta solo pegar la ejecución real.
 
-**Entregable:** `db/06_vistas.sql` (3 vistas definitivas: `v_productos_vigentes_con_categoria`, `v_pedidos_con_cliente`, `v_detalle_pedido_con_producto`).
+**Entregable:** `db/parcial1_06_vistas.sql` (3 vistas definitivas: `v_productos_vigentes_con_categoria`, `v_pedidos_con_cliente`, `v_detalle_pedido_con_producto`).
 **Previos conservados:** `db/anexos_tps/vistas_reportes_prompt_opencode.sql`, `db/anexos_tps/vistas_reportes_prompt_propio.sql`.
 **Spec Kiro:** `spec/spec_parteB_kiro.md`. **DUIA:** `docs/duia_parteB_vistas.md`.
 **Script de verificación:** `db/anexos_tps/verificacion_vistas_parteB.sql`.
@@ -13,14 +15,14 @@
 - Conexión verificada: `SELECT current_database(), current_user` → `foodstore_desarrollo, postgres` (PostgreSQL 17.11).
 - Base `foodstore_desarrollo` ya existía (junto a `foodstore`, `foodstore_tpi`); no se recreó para no borrar datos (50.000 productos, 20.000 clientes, 200.000 pedidos, 600.000 detalles).
 - Respaldo estructural previo al DDL: `pg_dump --schema-only -F c` → `backups/respaldo_esquema_views_20260923_103912.backup` (15.617 bytes, copiado a `foodstore_bd/backups/`).
-- Vistas aplicadas sobre `foodstore_desarrollo`: `vistas_reportes_prompt_opencode.sql` (3× CREATE VIEW) + `vistas_reportes_prompt_propio.sql` (3× CREATE VIEW) + `06_vistas.sql` (3× CREATE VIEW).
+- Vistas aplicadas sobre `foodstore_desarrollo`: `vistas_reportes_prompt_opencode.sql` (3× CREATE VIEW) + `vistas_reportes_prompt_propio.sql` (3× CREATE VIEW) + `parcial1_06_vistas.sql` (3× CREATE VIEW).
 
 ## Aclaración sobre “coinciden exactamente”
 
 Los JOIN y filtros WHERE son idénticos entre versiones, por lo que el conjunto
 de **filas** es el mismo. Las **columnas** difieren por diseño (OpenCode agrega
-`disponible, categoria_id, cliente_id, detalle_id`; ver `docs/informes/informe_equivalencia_vistas.md`).
-Por eso la verificación `EXCEPT` se hace sobre columnas comunes y `db/06_vistas.sql`
+`disponible, categoria_id, cliente_id, detalle_id`; ver `docs/informes/parcial1_informe_equivalencia_vistas.md`).
+Por eso la verificación `EXCEPT` se hace sobre columnas comunes y `db/parcial1_06_vistas.sql`
 fija la lista definitiva (la completa de OpenCode). Completar la tabla con 0 filas.
 
 ## Resultados reales (ejecución 2026-09-23 sobre foodstore_desarrollo)
@@ -55,7 +57,7 @@ table_name | column_name → (0 filas)
 
 ## Criterio de seguridad (punto 4)
 
-Vista 2 (`v_pedidos_con_cliente` en `db/06_vistas.sql:28-53`) expone cliente sin
+Vista 2 (`v_pedidos_con_cliente` en `db/parcial1_06_vistas.sql:28-53`) expone cliente sin
 `contrasenia` (tampoco `rol` ni auditoría). Patrón para otorgar acceso sin tabla base:
 
 ```sql
@@ -67,6 +69,6 @@ GRANT SELECT ON v_pedidos_con_cliente TO rol_reportes;
 ## Pasos reproducibles (5 min)
 
 1. `psql -d foodstore_desarrollo`, verificar `\conninfo`.
-2. `\i db/anexos_tps/vistas_reportes_prompt_opencode.sql` + `\i db/anexos_tps/vistas_reportes_prompt_propio.sql` + `\i db/06_vistas.sql`.
+2. `\i db/anexos_tps/vistas_reportes_prompt_opencode.sql` + `\i db/anexos_tps/vistas_reportes_prompt_propio.sql` + `\i db/parcial1_06_vistas.sql`.
 3. `\i db/anexos_tps/verificacion_vistas_parteB.sql` — resultado ya registrado arriba el 2026-09-23.
 4. Las 3 vistas quedan validadas (0 filas de diferencia y conteos iguales).

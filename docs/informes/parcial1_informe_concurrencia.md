@@ -1,5 +1,7 @@
 # Informe de Concurrencia — Foodstore TP2 Parte 2
 
+> **Evidencia del Parcial 1 — Objetivo 8 (transacciones y concurrencia).** Ver [`Informe_Parcial_1.md`](../../Informe_Parcial_1.md).
+
 **Motor:** PostgreSQL 17.11
 **Base de trabajo:** foodstore_desarrollo (copia de foodstore via `createdb -T foodstore`)
 **SO:** Windows — terminal CMD + psql 17.11

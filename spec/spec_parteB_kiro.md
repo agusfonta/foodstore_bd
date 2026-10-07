@@ -2,7 +2,7 @@
 
 > Este archivo guarda la especificación pedida en el punto 1 de la consigna 4.2
 > Parte B. No modifica ningún archivo previo. Complementa `spec/spec_tp3.md`
-> (que solo contenía Punto 2 y 3) y `docs/informes/informe_equivalencia_vistas.md`.
+> (que solo contenía Punto 2 y 3) y `docs/informes/parcial1_informe_equivalencia_vistas.md`.
 
 ## Prompt Kiro utilizado (texto exacto)
 
@@ -24,12 +24,12 @@ Generame el SQL con CREATE VIEW.
 | Pedidos con datos del usuario | Punto 2: `pedidos JOIN clientes` |
 | Detalle de un pedido con nombre del producto | Punto 3: `detalle_pedido JOIN productos` |
 | Columnas a exponer con precisión | Listadas una por una en cada punto |
-| Filtro de vigencia | `eliminado=false AND deleted_at IS NULL` en ambas tablas del JOIN (doble borrado lógico de `db/01_ddl_schema.sql`) |
+| Filtro de vigencia | `eliminado=false AND deleted_at IS NULL` en ambas tablas del JOIN (doble borrado lógico de `db/parcial1_01_ddl_schema.sql`) |
 | Columna a ocultar por seguridad | Punto 2: `no mostrar cl.contrasenia nunca` (criterio teórico: vista sin contraseña) |
 
 ## Trazabilidad
 
 - Salida de Kiro con este prompt: `db/anexos_tps/vistas_reportes_prompt_propio.sql` (versión estudiante/manual, nombres cortos).
 - Salida de OpenCode con la especificación extendida: `db/anexos_tps/vistas_reportes_prompt_opencode.sql` (nombres descriptivos + columnas extra `disponible, categoria_id, cliente_id, detalle_id`).
-- Vistas definitivas validadas (entregable): `db/06_vistas.sql`.
-- Verificación de equivalencia: `docs/informes/bitacora_verificacion_vistas_parteB.md` + script `db/anexos_tps/verificacion_vistas_parteB.sql`.
+- Vistas definitivas validadas (entregable): `db/parcial1_06_vistas.sql`.
+- Verificación de equivalencia: `docs/informes/parcial1_bitacora_verificacion_vistas_parteB.md` + script `db/anexos_tps/verificacion_vistas_parteB.sql`.
