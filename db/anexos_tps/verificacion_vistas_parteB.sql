@@ -2,12 +2,12 @@
 -- Verificación de equivalencia Parte B — ejecutar contra foodstore_desarrollo
 -- Orden: 1) crear vistas previas, 2) crear vistas definitivas, 3) correr EXCEPT
 -- Uso (psql, tras verificar \conninfo = foodstore_desarrollo):
---   \i db/vistas_reportes_prompt_opencode.sql
---   \i db/vistas_reportes_prompt_propio.sql
+--   \i db/anexos_tps/vistas_reportes_prompt_opencode.sql
+--   \i db/anexos_tps/vistas_reportes_prompt_propio.sql
 --   \i db/06_vistas.sql
---   \i db/verificacion_vistas_parteB.sql
+--   \i db/anexos_tps/verificacion_vistas_parteB.sql
 -- Cada EXCEPT debe devolver 0 filas. Pegar los resultados en
--- docs/bitacora_verificacion_vistas_parteB.md
+-- docs/informes/bitacora_verificacion_vistas_parteB.md
 -- =============================================================================
 
 -- ---------- VISTA 1: productos + categoría (columnas comunes) ----------

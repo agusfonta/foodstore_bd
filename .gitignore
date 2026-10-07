@@ -1,2 +1,4 @@
-foodstore_bd/db/backups
+.DS_Store
+.env
 .env.example
+backups/*.tmp

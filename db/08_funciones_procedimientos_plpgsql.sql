@@ -35,7 +35,7 @@
 --     BEGIN ... COMMIT explicito el llamador decide cuando confirmar.
 --   * El stock se RESERVA al crear el pedido y se DEVUELVE al cancelarlo.
 --   * El control de concurrencia es pesimista: SELECT ... FOR UPDATE sobre las
---     filas de productos / pedidos que se van a modificar (ver informe_concurrencia.md).
+--     filas de productos / pedidos que se van a modificar (ver docs/informes/informe_concurrencia.md).
 --     Los productos se bloquean siempre en orden de id para evitar deadlocks
 --     entre dos pedidos que compran los mismos productos en distinto orden.
 --   * Borrado logico: se marcan juntos eliminado = TRUE y deleted_at = now().
@@ -338,7 +338,7 @@ $$;
 -- sp_refrescar_facturacion_categoria_mes
 --   Refresca la vista materializada del script 07 sin bloquear lecturas
 --   (REFRESH ... CONCURRENTLY exige el indice UNIQUE uix_mv_facturacion_categoria_mes).
---   Politica de frecuencia: docs/politica_refresh.md
+--   Politica de frecuencia: docs/informes/politica_refresh.md
 -- -----------------------------------------------------------------------------
 CREATE OR REPLACE PROCEDURE sp_refrescar_facturacion_categoria_mes()
 LANGUAGE plpgsql

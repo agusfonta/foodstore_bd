@@ -14,14 +14,14 @@
 
 | # | Objetivo | Archivo |
 | :-: | :--- | :--- |
-| 1 | Modelo ER (entidades, atributos, claves, cardinalidad, participación) | [`docs/01_modelo_er.md`](docs/01_modelo_er.md) |
-| 2 | Paso de ER a modelo relacional (1:N y N:M con tabla intermedia) | [`docs/02_modelo_relacional.md`](docs/02_modelo_relacional.md) |
-| 3 | Normalización hasta 3FN/BCNF con dependencias funcionales | [`docs/03_normalizacion.md`](docs/03_normalizacion.md) |
+| 1 | Modelo ER (entidades, atributos, claves, cardinalidad, participación) | [`docs/01_modelo_er.md`](docs/01_modelo_er.md) · TP1 del equipo: [`TP1 (docx)`](Informes_tps/TP1_FoodStore_ModeloER_Normalizacion_DDL.docx) y [`diagrama`](docs/img/TP1_diagrama_ER_pata_de_gallo.png) |
+| 2 | Paso de ER a modelo relacional (1:N y N:M con tabla intermedia) | [`docs/02_modelo_relacional.md`](docs/02_modelo_relacional.md) · TP1, Parte 2 |
+| 3 | Normalización hasta 3FN/BCNF con dependencias funcionales | [`docs/03_normalizacion.md`](docs/03_normalizacion.md) · TP1, Parte 3 |
 | 4 | DDL completo (tipos, PK, FK, restricciones, índices) | [`db/01_ddl_schema.sql`](db/01_ddl_schema.sql) · [`db/03_ddl_indices.sql`](db/03_ddl_indices.sql) |
 | 5 | DML y consultas (JOIN, agregación, subconsultas, GROUP BY/HAVING, ventana) | [`db/04_dml_carga_masiva.sql`](db/04_dml_carga_masiva.sql) · [`db/05_dml_consultas.sql`](db/05_dml_consultas.sql) |
 | 6 | Vistas, funciones y procedimientos (PL/pgSQL, `CALL`) | [`db/06_vistas.sql`](db/06_vistas.sql) · [`db/07_vista_materializada.sql`](db/07_vista_materializada.sql) · [`db/08_funciones_procedimientos_plpgsql.sql`](db/08_funciones_procedimientos_plpgsql.sql) |
 | 7 | Reglas de negocio (CHECK, UNIQUE, triggers) | [`db/02_reglas_negocio_check_unique_triggers.sql`](db/02_reglas_negocio_check_unique_triggers.sql) |
-| 8 | Transacciones: atomicidad, COMMIT, ROLLBACK, aislamiento, concurrencia | [`db/09_transacciones.sql`](db/09_transacciones.sql) · [`docs/informe_concurrencia.md`](docs/informe_concurrencia.md) · [`capturas/`](capturas) |
+| 8 | Transacciones: atomicidad, COMMIT, ROLLBACK, aislamiento, concurrencia | [`db/09_transacciones.sql`](db/09_transacciones.sql) · [`docs/informes/informe_concurrencia.md`](docs/informes/informe_concurrencia.md) · [`capturas/`](capturas) |
 | 9 | Borrado lógico y su impacto en consultas e índices | [`db/10_borrado_logico.sql`](db/10_borrado_logico.sql) |
 
 ## Orden de ejecución de los scripts (`db/`)
@@ -52,8 +52,10 @@ Los scripts 09 y 10 crean datos de prueba y los eliminan al terminar.
 | Carpeta / archivo | Contenido |
 | :--- | :--- |
 | `docs/duia/` | Declaraciones de uso de IA de cada parte (la corrección de esta entrega: [`duia_tpi_entrega1.md`](docs/duia/duia_tpi_entrega1.md)) |
-| `docs/` | Informes: concurrencia, lectura crítica, equivalencia de vistas, benchmark de la vista materializada, política de refresh |
-| `Informes_tps/` | Informes de los TP3, TP4 y TP5 ([`Informe_optimizacion_consultas_indices.md`](Informes_tps/Informe_optimizacion_consultas_indices.md)) |
+| `docs/01..03_*.md`, `docs/informe_tecnico_tpi.md` | Modelo ER, relacional, normalización e informe técnico del TPI |
+| `docs/informes/` | Informes de partes anteriores: concurrencia, lectura crítica, equivalencia de vistas, bitácora de verificación, benchmark de la vista materializada, política de refresh |
+| `docs/img/` | Imágenes (diagrama ER del TP1) |
+| `Informes_tps/` | Trabajos prácticos del equipo: TP1 (ER, relacional, normalización, DDL), consigna del TP2, TP3, TP4, Parte 5 y el informe de optimización ([`Informe_optimizacion_consultas_indices.md`](Informes_tps/Informe_optimizacion_consultas_indices.md)) |
 | `spec/` | Especificaciones entregadas a la IA |
-| `db/` (archivos sin número) | Scripts auxiliares de las partes anteriores: `tp5_mediciones_pendientes.sql`, `parte5_competencia.sql`, `benchmark_vista_materializada.sql`, `verificacion_vistas_parteB.sql`, `vistas_reportes_prompt_*.sql` |
+| `db/anexos_tps/` | Scripts auxiliares de las partes anteriores: `tp5_mediciones_pendientes.sql`, `parte5_competencia.sql`, `benchmark_vista_materializada.sql`, `verificacion_vistas_parteB.sql`, `vistas_reportes_prompt_*.sql` |
 | `backups/` | Respaldo estructural (`pg_dump`) previo a cambios DDL |

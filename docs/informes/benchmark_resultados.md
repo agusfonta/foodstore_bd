@@ -171,7 +171,7 @@ sin impacto en la exactitud del reporte.
 | :--- | :--- |
 | **Herramienta** | Kiro (Claude – Anthropic) |
 | **Prompt utilizado** | "Medir el tiempo de consultar el reporte contra la vista materializada frente al tiempo de ejecutar la consulta original sin materializar." |
-| **Qué generó** | Script `db/benchmark_vista_materializada.sql` con EXPLAIN ANALYZE, DISCARD ALL entre mediciones y pasos de cold cache. Este documento con los resultados reales, planes completos y análisis. |
+| **Qué generó** | Script `db/anexos_tps/benchmark_vista_materializada.sql` con EXPLAIN ANALYZE, DISCARD ALL entre mediciones y pasos de cold cache. Este documento con los resultados reales, planes completos y análisis. |
 | **Qué se aceptó** | Estructura completa del script, ejecución automatizada de las 6 mediciones (3 por consulta) y redacción del análisis. |
 | **Qué se modificó o descartó** | Ninguna modificación manual. Los valores numéricos son los obtenidos directamente de `EXPLAIN ANALYZE` contra `foodstore_desarrollo`. |
 | **Verificación realizada** | 3 ejecuciones de cada consulta con `EXPLAIN (ANALYZE, BUFFERS)` sobre 600 000 filas reales. Mediana de Execution Time: 1 364 ms (original) vs 0.19 ms (vista). Factor de mejora real: ~7 180×. |

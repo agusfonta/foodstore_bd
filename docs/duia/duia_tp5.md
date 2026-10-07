@@ -3,7 +3,7 @@
 **Proyecto:** Foodstore — PostgreSQL, base de trabajo `foodstore_desarrollo` (copia, no producción)
 **Informe asociado:** `Informes_tps/Informe_optimizacion_consultas_indices.md`
 **Specs asociadas:** `spec/spec_tp5.md`
-**Script de mediciones:** `db/tp5_mediciones_pendientes.sql`
+**Script de mediciones:** `db/anexos_tps/tp5_mediciones_pendientes.sql`
 
 ---
 

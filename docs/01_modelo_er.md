@@ -119,6 +119,14 @@ erDiagram
 
 > La relación `CONTIENE` es **N:M con atributos propios** (`cantidad`, `precio_unitario`, `subtotal`); por eso en el paso al modelo relacional se resuelve con la tabla intermedia `detalle_pedido` (ver [`02_modelo_relacional.md`](02_modelo_relacional.md)). Los atributos de auditoría / borrado lógico (2.6) no se dibujan para no saturar el diagrama.
 
+### Diagrama del TP1 (versión original del equipo)
+
+El equipo ya había construido este modelo en el [TP1](../Informes_tps/TP1_FoodStore_ModeloER_Normalizacion_DDL.docx) (Parte 1, diagrama pata de gallo con participaciones *parcial/total*). Se incluye la imagen original:
+
+![Diagrama ER del TP1](img/TP1_diagrama_ER_pata_de_gallo.png)
+
+Las participaciones del TP1 coinciden con la sección 4 (categoría parcial / producto total; cliente parcial / pedido total; pedido total / producto parcial respecto del detalle). Diferencia: el diagrama del TP1 muestra los tipos de la herramienta de modelado (`DOUBLE`, `DATE`); el **DDL definitivo** usa `NUMERIC` para dinero y `TIMESTAMPTZ` para fechas.
+
 ## 4. Relaciones: cardinalidad y participación
 
 Participación expresada como **(mínimo, máximo)** de ocurrencias de la relación en las que interviene cada entidad.

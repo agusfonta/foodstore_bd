@@ -2,7 +2,7 @@
 
 > Este archivo guarda la especificación pedida en el punto 1 de la consigna 4.2
 > Parte B. No modifica ningún archivo previo. Complementa `spec/spec_tp3.md`
-> (que solo contenía Punto 2 y 3) y `docs/informe_equivalencia_vistas.md`.
+> (que solo contenía Punto 2 y 3) y `docs/informes/informe_equivalencia_vistas.md`.
 
 ## Prompt Kiro utilizado (texto exacto)
 
@@ -29,7 +29,7 @@ Generame el SQL con CREATE VIEW.
 
 ## Trazabilidad
 
-- Salida de Kiro con este prompt: `db/vistas_reportes_prompt_propio.sql` (versión estudiante/manual, nombres cortos).
-- Salida de OpenCode con la especificación extendida: `db/vistas_reportes_prompt_opencode.sql` (nombres descriptivos + columnas extra `disponible, categoria_id, cliente_id, detalle_id`).
+- Salida de Kiro con este prompt: `db/anexos_tps/vistas_reportes_prompt_propio.sql` (versión estudiante/manual, nombres cortos).
+- Salida de OpenCode con la especificación extendida: `db/anexos_tps/vistas_reportes_prompt_opencode.sql` (nombres descriptivos + columnas extra `disponible, categoria_id, cliente_id, detalle_id`).
 - Vistas definitivas validadas (entregable): `db/06_vistas.sql`.
-- Verificación de equivalencia: `docs/bitacora_verificacion_vistas_parteB.md` + script `db/verificacion_vistas_parteB.sql`.
+- Verificación de equivalencia: `docs/informes/bitacora_verificacion_vistas_parteB.md` + script `db/anexos_tps/verificacion_vistas_parteB.sql`.

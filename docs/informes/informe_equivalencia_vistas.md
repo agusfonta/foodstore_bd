@@ -2,8 +2,8 @@
 
 **Base de datos:** foodstore (PostgreSQL 17)  
 **Archivos comparados:**
-- `db/vistas_reportes_prompt_opencode.sql` — vistas generadas con prompt OpenCode
-- `db/vistas_reportes_prompt_propio.sql` — vistas generadas con prompt propio
+- `db/anexos_tps/vistas_reportes_prompt_opencode.sql` — vistas generadas con prompt OpenCode
+- `db/anexos_tps/vistas_reportes_prompt_propio.sql` — vistas generadas con prompt propio
 
 ---
 

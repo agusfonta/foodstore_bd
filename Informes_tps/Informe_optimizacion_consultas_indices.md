@@ -231,7 +231,7 @@ Prueba: insertar un lote en `detalle_pedido`, sin y con `idx_detalle_pedido_agg_
 
 ### Medición repetida (lote más grande)
 
-Con 500 filas y una sola ejecución, 16 ms contra 15 ms está dentro del ruido de la medición: **la prueba no alcanza para concluir nada**. Incluso "con índice" dio más rápido, cosa que no tiene sentido físico. Se repite con un lote de **50.000 filas** y **5 ejecuciones** por escenario (script `db/tp5_mediciones_pendientes.sql`, bloque 3):
+Con 500 filas y una sola ejecución, 16 ms contra 15 ms está dentro del ruido de la medición: **la prueba no alcanza para concluir nada**. Incluso "con índice" dio más rápido, cosa que no tiene sentido físico. Se repite con un lote de **50.000 filas** y **5 ejecuciones** por escenario (script `db/anexos_tps/tp5_mediciones_pendientes.sql`, bloque 3):
 
 | Escenario | Filas | Tiempo (mediana de 5) |
 | :--- | :--- | :--- |

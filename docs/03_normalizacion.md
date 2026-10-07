@@ -6,6 +6,8 @@
 
 Notación: `X → Y` = «X determina funcionalmente a Y». `{ … }` = grupo repetitivo. Las columnas de auditoría y borrado lógico se tratan en la sección 6.
 
+> **Relación con el TP1:** en el [TP1, Parte 3](../Informes_tps/TP1_FoodStore_ModeloER_Normalizacion_DDL.docx) el equipo normalizó una planilla de ventas (clave `(nro_pedido, producto)`, dependencias parciales `nro_pedido → fecha, cliente, forma_pago` y `producto → categoría`, y `precio_unitario` histórico que depende de la venta) hasta `pedido`, `producto` y `detalle_pedido` en BCNF. Este documento retoma ese razonamiento y lo extiende al **esquema final de cinco tablas**, incorporando `cliente` y `categoría` (la planilla solo traía sus nombres) y el análisis de los atributos derivados. Sobre `subtotal`, el TP1 concluyó que guardarlo es una decisión de diseño (rendimiento y trazabilidad) y no una violación de 1FN/2FN; acá se precisa que, en sentido estricto, es una dependencia entre atributos no clave y por eso se la declara como desnormalización controlada (sección 5).
+
 ## 1. Punto de partida: relación sin normalizar (UNF)
 
 Sin pensar en el diseño, la información de un pedido se podría registrar en una única «planilla»:

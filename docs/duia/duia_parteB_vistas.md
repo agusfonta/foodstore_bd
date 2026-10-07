@@ -1,9 +1,9 @@
 # DUIA — Parte B: Vistas para reportes (Foodstore)
 
 **Proyecto:** Foodstore — PostgreSQL 17 (base de trabajo `foodstore_desarrollo`)
-**Archivos:** `db/06_vistas.sql` (entregable), `db/vistas_reportes_prompt_opencode.sql`, `db/vistas_reportes_prompt_propio.sql`
+**Archivos:** `db/06_vistas.sql` (entregable), `db/anexos_tps/vistas_reportes_prompt_opencode.sql`, `db/anexos_tps/vistas_reportes_prompt_propio.sql`
 **Spec base:** `spec/spec_parteB_kiro.md`
-**Verificación:** `docs/bitacora_verificacion_vistas_parteB.md` + `db/verificacion_vistas_parteB.sql`
+**Verificación:** `docs/informes/bitacora_verificacion_vistas_parteB.md` + `db/anexos_tps/verificacion_vistas_parteB.sql`
 **Fecha:** 2026-09-23
 **Nota:** este archivo nuevo no modifica `docs/duia_uso_de_la_IA_TP3.md` (vacío) ni las DUIA de Parte 1/2.
 
@@ -16,7 +16,7 @@
 | **Qué generó** | OpenCode: `v_productos_vigentes_con_categoria(producto_id, producto_nombre, precio, stock, disponible, categoria_id, categoria_nombre)` con `JOIN categorias` y doble filtro de vigencia |
 | **Qué se aceptó** | JOIN, filtros WHERE y lista base de columnas tal cual |
 | **Qué se modificó o descartó, y por qué** | Se agregaron `disponible` y `categoria_id` en la versión OpenCode para reportes (no pedidas en el prompt corto de Kiro). No afecta filas, solo columnas expuestas. La versión definitiva `db/06_vistas.sql` conserva esas columnas extra |
-| **Verificación realizada** | `EXCEPT` en ambas direcciones sobre columnas comunes + conteo. Ver `docs/bitacora_verificacion_vistas_parteB.md` Vista 1. Esperado: 0 filas de diferencia |
+| **Verificación realizada** | `EXCEPT` en ambas direcciones sobre columnas comunes + conteo. Ver `docs/informes/bitacora_verificacion_vistas_parteB.md` Vista 1. Esperado: 0 filas de diferencia |
 
 ## Vista 2 — Pedidos con datos del usuario (criterio de seguridad)
 

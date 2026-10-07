@@ -149,7 +149,7 @@ ORDER BY subtotal_promedio DESC;
 -- -----------------------------------------------------------------------------
 -- Subconsulta con NOT EXISTS: productos vigentes que nunca se vendieron.
 -- (Se usa NOT EXISTS y no NOT IN: NOT IN devuelve 0 filas si la subconsulta
---  tiene algun NULL, ver docs/ejercicio_lectura_critica.md.)
+--  tiene algun NULL, ver docs/informes/ejercicio_lectura_critica.md.)
 -- -----------------------------------------------------------------------------
 SELECT pr.id, pr.nombre, pr.stock
 FROM productos pr

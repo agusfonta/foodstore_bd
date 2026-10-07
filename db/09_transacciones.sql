@@ -20,7 +20,7 @@
 --
 -- La evidencia de los experimentos con DOS sesiones simultaneas (lectura no
 -- repetible, lectura fantasma y espera por bloqueo) esta en
--- docs/informe_concurrencia.md. La seccion 6 de este script agrega la prueba de
+-- docs/informes/informe_concurrencia.md. La seccion 6 de este script agrega la prueba de
 -- concurrencia sobre sp_crear_pedido (ultima unidad de stock).
 -- =============================================================================
 
@@ -169,7 +169,7 @@ BEGIN ISOLATION LEVEL SERIALIZABLE;
 SHOW transaction_isolation;              -- serializable
 COMMIT;
 
--- Diferencias demostradas con dos sesiones en docs/informe_concurrencia.md:
+-- Diferencias demostradas con dos sesiones en docs/informes/informe_concurrencia.md:
 --   Exp. 1 lectura no repetible : ocurre en READ COMMITTED, no en REPEATABLE READ
 --   Exp. 2 lectura fantasma     : ocurre en READ COMMITTED, no en REPEATABLE READ
 --   Exp. 3 espera por bloqueo   : UPDATE vs UPDATE sobre la misma fila (lock de fila)
