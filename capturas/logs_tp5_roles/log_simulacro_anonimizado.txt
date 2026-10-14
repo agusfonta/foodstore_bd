@@ -1,0 +1,94 @@
+﻿-- =============================================================================
+-- LOG ANONIMIZADO — Simulacro de incidente de acceso indebido
+-- TP Unidad 5 Parte C — Food Store
+-- Fecha original: 2026-10-14
+-- Anonimización: mails, nombres, IPs y PIDs reemplazados por valores sintéticos
+-- Método: sustitución determinista (mismo dato real → mismo valor sintético)
+-- =============================================================================
+
+-- -----------------------------------------------------------------------------
+-- SESIÓN PREVIA (11:37) — Ejecución de roles.sql (NO es parte del simulacro)
+-- Se incluye como contexto: esta sesión configuró los roles y permisos.
+-- Algunos GRANTs fallaron porque los procedimientos/funciones no estaban
+-- cargados en foodstore_desarrollo al momento de ejecutar roles.sql.
+-- -----------------------------------------------------------------------------
+
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  conexión autorizada: usuario=postgres base_de_datos=foodstore_desarrollo nombre_de_aplicación=psql
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT USAGE ON SCHEMA public TO rol_app_lectura, rol_app_escritura, rol_soporte, rol_reportes;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT SELECT ON v_productos_vigentes_con_categoria TO rol_app_lectura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT SELECT ON v_pedidos_con_cliente TO rol_app_lectura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT SELECT, INSERT, UPDATE ON pedidos TO rol_app_escritura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT SELECT, INSERT, UPDATE ON detalle_pedido TO rol_app_escritura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT SELECT, UPDATE ON productos TO rol_app_escritura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT SELECT (id, eliminado) ON clientes TO rol_app_escritura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT USAGE ON SEQUENCE pedidos_id_seq TO rol_app_escritura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT USAGE ON SEQUENCE detalle_pedido_id_seq TO rol_app_escritura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT EXECUTE ON PROCEDURE sp_crear_pedido(BIGINT, forma_pago, JSONB, BIGINT) TO rol_app_escritura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo ERROR:  no existe el procedimiento «sp_crear_pedido(bigint, forma_pago, jsonb, bigint)»
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo SENTENCIA:  GRANT EXECUTE ON PROCEDURE sp_crear_pedido(BIGINT, forma_pago, JSONB, BIGINT) TO rol_app_escritura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT EXECUTE ON PROCEDURE sp_cambiar_estado_pedido(BIGINT, estado_pedido) TO rol_app_escritura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo ERROR:  no existe el procedimiento «sp_cambiar_estado_pedido(bigint, estado_pedido)»
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo SENTENCIA:  GRANT EXECUTE ON PROCEDURE sp_cambiar_estado_pedido(BIGINT, estado_pedido) TO rol_app_escritura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: REVOKE DELETE, TRUNCATE ON pedidos FROM rol_app_escritura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: REVOKE DELETE, TRUNCATE ON detalle_pedido FROM rol_app_escritura;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: REVOKE DELETE, TRUNCATE ON clientes FROM rol_soporte;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT SELECT (id, nombre, apellido, mail, celular, rol) ON clientes TO rol_soporte;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT SELECT ON v_pedidos_con_cliente TO rol_soporte;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT SELECT ON v_detalle_pedido_con_producto TO rol_soporte;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT SELECT ON mv_facturacion_categoria_mes TO rol_reportes;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo ERROR:  no existe la relación «mv_facturacion_categoria_mes»
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo SENTENCIA:  GRANT SELECT ON mv_facturacion_categoria_mes TO rol_reportes;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT SELECT ON v_productos_vigentes_con_categoria TO rol_reportes;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT SELECT ON v_detalle_pedido_con_producto TO rol_reportes;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT EXECUTE ON FUNCTION fn_ranking_productos_categoria(INTEGER) TO rol_reportes;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo ERROR:  no existe la función fn_ranking_productos_categoria(integer)
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo SENTENCIA:  GRANT EXECUTE ON FUNCTION fn_ranking_productos_categoria(INTEGER) TO rol_reportes;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT rol_app_lectura TO app_web;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: GRANT rol_app_escritura TO app_web;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  sentencia: ALTER DEFAULT PRIVILEGES FOR ROLE admin_datos IN SCHEMA public GRANT SELECT ON TABLES TO rol_reportes;
+2026-10-14 11:37:45 -03 [PID-001] postgres@foodstore_desarrollo LOG:  desconexión: duración de sesión: 0:00:00.185 usuario=postgres base=foodstore_desarrollo host=::1 port=XXXXX
+
+-- -----------------------------------------------------------------------------
+-- INICIO DEL SIMULACRO (11:48) — Secuencia del incidente
+-- -----------------------------------------------------------------------------
+
+-- FASE 1: Tres intentos fallidos de autenticación
+2026-10-14 11:48:01 -03 [PID-002] postgres@foodstore_desarrollo LOG:  conexión autenticada: identidad=«postgres» método=scram-sha-256 (pg_hba.conf:117)
+2026-10-14 11:48:01 -03 [PID-002] postgres@foodstore_desarrollo LOG:  conexión autorizada: usuario=postgres base_de_datos=foodstore_desarrollo nombre_de_aplicación=psql
+
+-- Intento fallido 1: usuario inexistente
+2026-10-14 11:48:01 -03 [PID-002] postgres@foodstore_desarrollo LOG:  sentencia: SELECT id, nombre, apellido FROM clientes WHERE mail = 'atacante_test@example.com' AND contrasenia = md5('password_incorrecta_1') AND eliminado = FALSE;
+
+-- Intento fallido 2: usuario existente, contraseña incorrecta
+2026-10-14 11:48:01 -03 [PID-002] postgres@foodstore_desarrollo LOG:  sentencia: SELECT id, nombre, apellido FROM clientes WHERE mail = (SELECT mail FROM clientes WHERE eliminado = FALSE LIMIT 1) AND contrasenia = md5('password_incorrecta_2') AND eliminado = FALSE;
+
+-- Intento fallido 3: segundo intento con contraseña incorrecta
+2026-10-14 11:48:01 -03 [PID-002] postgres@foodstore_desarrollo LOG:  sentencia: SELECT id, nombre, apellido FROM clientes WHERE mail = (SELECT mail FROM clientes WHERE eliminado = FALSE LIMIT 1) AND contrasenia = md5('password_incorrecta_3') AND eliminado = FALSE;
+
+-- FASE 2: Login exitoso
+2026-10-14 11:48:01 -03 [PID-002] postgres@foodstore_desarrollo LOG:  sentencia: SELECT id, nombre, apellido, mail, rol FROM clientes WHERE eliminado = FALSE LIMIT 1;
+
+-- FASE 3: Lectura masiva de la tabla clientes (exfiltración)
+2026-10-14 11:48:01 -03 [PID-002] postgres@foodstore_desarrollo LOG:  sentencia: SELECT id, nombre, apellido, mail, celular, rol, created_at FROM clientes WHERE eliminado = FALSE ORDER BY id;
+
+-- FASE 4: Intento de login fallido como app_web (credenciales incorrectas)
+2026-10-14 11:48:20 -03 [PID-003] app_web@foodstore_desarrollo FATAL:  la autenticación password falló para el usuario «app_web»
+2026-10-14 11:48:20 -03 [PID-003] app_web@foodstore_desarrollo DETALLE:  La conexión coincidió con pg_hba.conf línea 117: «host all all ::1/128 scram-sha-256»
+
+-- FASE 4 (cont.): Intento de escalamiento de privilegios simulado con SET ROLE
+2026-10-14 11:51:22 -03 [PID-004] postgres@foodstore_desarrollo LOG:  conexión autenticada: identidad=«postgres» método=scram-sha-256 (pg_hba.conf:117)
+2026-10-14 11:51:22 -03 [PID-004] postgres@foodstore_desarrollo LOG:  conexión autorizada: usuario=postgres base_de_datos=foodstore_desarrollo nombre_de_aplicación=psql
+2026-10-14 11:51:22 -03 [PID-004] postgres@foodstore_desarrollo LOG:  sentencia: SET ROLE app_web; GRANT admin_datos TO rol_app_lectura;
+2026-10-14 11:51:22 -03 [PID-004] postgres@foodstore_desarrollo ERROR:  se ha denegado el permiso para otorgar el rol «admin_datos»
+2026-10-14 11:51:22 -03 [PID-004] postgres@foodstore_desarrollo DETALLE:  Sólo los roles con la opción ADMIN en el rol «admin_datos» pueden otorgar este rol.
+2026-10-14 11:51:22 -03 [PID-004] postgres@foodstore_desarrollo SENTENCIA:  SET ROLE app_web; GRANT admin_datos TO rol_app_lectura;
+2026-10-14 11:51:22 -03 [PID-004] postgres@foodstore_desarrollo LOG:  desconexión: duración de sesión: 0:00:00.051 usuario=postgres base=foodstore_desarrollo host=::1 port=XXXXX
+
+-- =============================================================================
+-- FIN DEL LOG ANONIMIZADO
+-- Datos sustituidos: PIDs reales → PID-001/002/003/004
+--                    Puertos reales → XXXXX
+--                    Caracteres especiales corregidos (encoding UTF-8)
+-- Datos NO presentes en este log: mails reales, nombres reales de clientes
+-- (las sentencias muestran la estructura de la consulta, no los valores devueltos)
+-- =============================================================================
