@@ -19,7 +19,7 @@
 $Host_    = "localhost"
 $Port     = 5432
 $User     = "postgres"
-$Database = "foodstore"
+$Database = "foodstore_desarrollo"
 
 # --- Rutas (relativas a la raiz del proyecto) ---
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
