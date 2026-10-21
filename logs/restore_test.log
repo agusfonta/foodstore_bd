@@ -1,0 +1,11 @@
+[2026-10-21 11:44:09] Respaldo usado: foodstore_20261021_114403.dump (creado 2026-10-21 11:44:08, antiguedad 0 min, 10639.21 KB)
+[2026-10-21 11:44:09] INICIO cronometro (restauracion en foodstore_restore_test)
+[2026-10-21 11:44:24] Conteo categorias: referencia=5 restaurado=5 OK
+[2026-10-21 11:44:24] Conteo clientes: referencia=20000 restaurado=20000 OK
+[2026-10-21 11:44:24] Conteo productos: referencia=50000 restaurado=50000 OK
+[2026-10-21 11:44:24] Conteo pedidos: referencia=200000 restaurado=200000 OK
+[2026-10-21 11:44:24] Conteo detalle_pedido: referencia=600000 restaurado=600000 OK
+[2026-10-21 11:44:24] productos_invalidos=0 detalles_invalidos=0
+[2026-10-21 11:44:24] Tiempo createdb+pg_restore: 14,0 s
+[2026-10-21 11:44:24] RTO observado (createdb + restore + validaciones): 14,8 s
+[2026-10-21 11:44:24] OK: restauracion validada en foodstore_restore_test.
