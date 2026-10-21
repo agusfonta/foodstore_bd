@@ -1,6 +1,6 @@
 # Evidencias — TP Unidad 6 (Food Store)
 
-Salidas reales obtenidas el 2026-10-21 11:52 con PostgreSQL 17.11 sobre `foodstore_desarrollo`. El archivo .dump se omite de la entrega (la consigna lo permite); se incluye evidencia de su creación, tamaño y restauración exitosa.
+Salidas reales obtenidas el 2026-10-21 11:52 con PostgreSQL 17.11 sobre `foodstore_desarrollo`. Los archivos .dump se incluyen en `backups/` (el usado en el simulacro es `foodstore_20261021_114403.dump`; el de las 11:39 es de una prueba previa).
 
 ## 1. Respaldo generado (Parte 2)
 
