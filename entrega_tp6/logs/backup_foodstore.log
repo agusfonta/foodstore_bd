@@ -1,0 +1,11 @@
+[2026-10-21 11:24:29] Inicio de respaldo: C:\Users\agusf\Desktop\foodstore_bd\foodstore_bd\backups\foodstore_20261021_112428.dump
+[2026-10-21 11:24:29] ERROR: pg_dump fallo con codigo 1. Respaldo NO completado.
+[2026-10-21 11:24:47] ERROR: PGPASSWORD no esta definida en el entorno. Definirla antes de ejecutar el script.
+[2026-10-21 11:35:26] Inicio de respaldo: C:\Users\agusf\Desktop\foodstore_bd\foodstore_bd\backups\foodstore_20261021_113526.dump
+[2026-10-21 11:35:26] OK: Respaldo completado. Archivo: C:\Users\agusf\Desktop\foodstore_bd\foodstore_bd\backups\foodstore_20261021_113526.dump (13.63 KB).
+[2026-10-21 11:35:50] Inicio de respaldo: C:\Users\agusf\Desktop\foodstore_bd\foodstore_bd\backups\foodstore_20261021_113550.dump
+[2026-10-21 11:35:50] OK: Respaldo completado. Archivo: C:\Users\agusf\Desktop\foodstore_bd\foodstore_bd\backups\foodstore_20261021_113550.dump (13.63 KB).
+[2026-10-21 11:39:30] Inicio de respaldo: C:\Users\agusf\Desktop\foodstore_bd\foodstore_bd\backups\foodstore_20261021_113929.dump
+[2026-10-21 11:39:36] OK: Respaldo completado. Archivo: C:\Users\agusf\Desktop\foodstore_bd\foodstore_bd\backups\foodstore_20261021_113929.dump (10639.21 KB).
+[2026-10-21 11:44:03] Inicio de respaldo: C:\Users\agusf\Desktop\foodstore_bd\foodstore_bd\backups\foodstore_20261021_114403.dump
+[2026-10-21 11:44:08] OK: Respaldo completado. Archivo: C:\Users\agusf\Desktop\foodstore_bd\foodstore_bd\backups\foodstore_20261021_114403.dump (10639.21 KB).
