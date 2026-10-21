@@ -4,6 +4,7 @@
 **Base original (no se toca):** `foodstore`
 **Base de trabajo (se respalda y monitorea):** `foodstore_desarrollo`
 **Base de restauración (descartable):** `foodstore_restore_test`
+**Objetivos previstos del laboratorio:** RPO 24 h (respaldo diario) · RTO 15 min (restauración + validaciones)
 
 ---
 
