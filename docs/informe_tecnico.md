@@ -12,7 +12,7 @@ Todo se hizo con datos de prueba y sobre la copia `foodstore_desarrollo`, nunca 
 
 ### Unidad 4 · Normalización avanzada y redundancia
 
-Resuelta con el TP «Normalización Avanzada y Redundancia» ([`informes/informe_u4_fnbc_desnormalizacion.pdf`](informes/informe_u4_fnbc_desnormalizacion.pdf)) y dos scripts en [`../postgres/normalizacion/`](../postgres/normalizacion/README.md).
+Resuelta con el TP «Normalización Avanzada y Redundancia» ([`informes/informe_u4_fnbc_desnormalizacion.pdf`](informes/informe_u4_fnbc_desnormalizacion.pdf)) y cuatro scripts en [`../postgres/normalizacion/`](../postgres/normalizacion/README.md).
 
 | Objetivo del PDF | Qué hay | Dónde |
 | :-- | :-- | :-- |
@@ -23,8 +23,8 @@ Resuelta con el TP «Normalización Avanzada y Redundancia» ([`informes/informe
 ### Unidad 5 · Administración y seguridad
 
 - **Roles de mínimo privilegio** ([`../postgres/seguridad/roles.sql`](../postgres/seguridad/roles.sql), spec Kiro en [`../specs/seguridad/kiro_roles/`](../specs/seguridad/kiro_roles/)). Roles de grupo `rol_app_lectura`, `rol_app_escritura` (sin `DELETE` ni `TRUNCATE`), `rol_soporte` (permiso por columna sobre `clientes`) y `rol_reportes`; roles de login `app_web` (`SCRAM-SHA-256`, `CONNECTION LIMIT`) y `admin_datos`; `ALTER DEFAULT PRIVILEGES` y script idempotente.
-- **Auditoría y simulacro de acceso indebido.** Parámetros de log activados (`log_connections`, `log_disconnections`, `log_statement = 'mod'`, `log_failed_auth`, `log_min_duration_statement`, `log_line_prefix`); secuencia de prueba en [`../postgres/seguridad/auditoria_test.sql`](../postgres/seguridad/auditoria_test.sql) y simulacro de cuatro fases (3 logins fallidos, login correcto, lectura masiva de `clientes`, intento de escalamiento) en [`../postgres/seguridad/simulacro_incidente.sql`](../postgres/seguridad/simulacro_incidente.sql). Se reconstruyó el incidente desde el log y se propuso contención: [`informes/informe_incidente_acceso_indebido.md`](informes/informe_incidente_acceso_indebido.md).
-- **Auditoría de seguridad asistida por IA con decisión humana:** [`informes/informe_auditoria_permisos.md`](informes/informe_auditoria_permisos.md) y [`ia/duia_u5_seguridad_roles.md`](ia/duia_u5_seguridad_roles.md) (la IA marcó 6 áreas de mejora de `roles.sql`; cada una quedó aceptada o descartada con motivo).
+- **Auditoría y simulacro de acceso indebido.** Parámetros de log activados (`log_connections`, `log_disconnections`, `log_statement = 'mod'`, `log_failed_auth`, `log_min_duration_statement`, `log_line_prefix`); secuencia de prueba en [`../postgres/seguridad/auditoria_test.sql`](../postgres/seguridad/auditoria_test.sql) y simulacro de cuatro fases (3 logins fallidos, login correcto, lectura masiva de `clientes`, intento de escalamiento) en [`../postgres/seguridad/simulacro_incidente.sql`](../postgres/seguridad/simulacro_incidente.sql). Los parámetros, el log capturado y su análisis están en [`informes/informe_auditoria_permisos.md`](informes/informe_auditoria_permisos.md). Se reconstruyó el incidente desde el log y se propuso contención: [`informes/informe_incidente_acceso_indebido.md`](informes/informe_incidente_acceso_indebido.md).
+- **Auditoría de seguridad del esquema de permisos asistida por IA, con decisión humana:** OpenCode auditó `roles.sql` y marcó 6 áreas de mejora; cada una quedó aceptada o descartada con motivo en [`ia/duia_u5_seguridad_roles.md`](ia/duia_u5_seguridad_roles.md) y [`ia/bitacora_u5_seguridad.md`](ia/bitacora_u5_seguridad.md).
 - **Privacidad:** [`../postgres/seguridad/usuario_anon.sql`](../postgres/seguridad/usuario_anon.sql) crea `clientes_anon` con datos enmascarados para compartir con asistentes de IA.
 
 ### Unidad 6 · Mantenimiento
@@ -56,21 +56,6 @@ Resuelta con el TP «Normalización Avanzada y Redundancia» ([`informes/informe
 | **Simulacro de acceso indebido** | Cuatro fases sobre `foodstore_desarrollo`; el escalamiento `GRANT admin_datos TO rol_app_lectura` fue denegado. Capturas en [`evidencias/seguridad/`](evidencias/seguridad/) |
 | **Simulacro de desastre** | `restore_test.ps1` restaura el último `.dump` en una base nueva, compara conteos con la de trabajo y valida restricciones lógicas |
 | **Conflictos de sincronización** | Casos C1 a C7 en [`../movil/pruebas_sqlite.sql`](../movil/pruebas_sqlite.sql) y [`simulador_casos.py`](../movil/simulador_casos.py) |
-
-### Verificación de esta reorganización (4 de noviembre de 2026)
-
-Tras mover los archivos a la estructura definitiva se volvieron a ejecutar desde las rutas nuevas:
-
-| Prueba | Resultado |
-| :-- | :-- |
-| `postgres/mantenimiento/restore_test.ps1` | OK: conteos 5 / 20 000 / 50 000 / 200 000 / 600 000 iguales; `productos_invalidos = 0`, `detalles_invalidos = 0`; **RTO 13,5 s** |
-| `postgres/mantenimiento/backup_foodstore.ps1` | OK: `backups/foodstore_20261104_103047.dump` (10 639,86 KB) |
-| `movil/pruebas_sqlite.sql` sobre copia de la base | Funciona: los errores esperados (`CHECK cantidad > 0`, `FOREIGN KEY`, UUID inválido, `UNIQUE` en `cola_sync`) se producen |
-| `python movil/simulador_casos.py --emular` | Los 6 casos dan el resultado esperado |
-| `mongosh mongodb/migrar_pedidos.js`, `verificacion_integridad.js`, `consultas_mongodb.js` | 10 documentos insertados; las 4 verificaciones de integridad dan 0; consultas correctas |
-| Enlaces `.md` | 0 enlaces rotos |
-
-**No se ejecutaron en esta verificación** (requieren conectarse a PostgreSQL con contraseña desde una sesión distinta de los scripts del proyecto): `health_check.sql`, `maintenance.sql`, `vista_snapshot.sql`, `simulador_casos.py` contra PostgreSQL y `exportar_pedidos_json.sql`. Sus últimas ejecuciones registradas son las de las entregas originales.
 
 ---
 
@@ -105,7 +90,8 @@ Las declaraciones completas (DUIA, con prompt o spec, qué generó, qué se acep
 
 | Unidad | Herramientas | Uso | Propuestas descartadas o corregidas (ejemplos) |
 | :-- | :-- | :-- | :-- |
-| U4 (y Parcial 1) | OpenCode / Claude Code | Modelo ER, relacional y normalización ([`ia/duia_parcial1_correcciones.md`](ia/duia_parcial1_correcciones.md)) | Se descartó presentar el esquema como «BCNF sin matices» por los atributos derivados |
+| U4 | Kiro (spec de la migración, [`../specs/normalizacion/`](../specs/normalizacion/requirements.md)); Claude Code (integración al repositorio y scripts `tp_fnbc_migracion_y_reversion.sql` y `tp_desnormalizacion_auditoria.sql`) | Migración reversible a FNBC y desnormalización controlada | Se usó `clientes(id)` en lugar de `usuario(id)` (la tabla real); se agregó un script de migración aparte porque el entregado no traía el esquema original ni los datos |
+| Parcial 1 (antecedente de U4) | OpenCode / Claude Code | Modelo ER, relacional y normalización general ([`ia/duia_parcial1_correcciones.md`](ia/duia_parcial1_correcciones.md)) | Se descartó presentar el esquema como «BCNF sin matices» por los atributos derivados |
 | U5 | Kiro, OpenCode | Spec y `roles.sql`; auditoría del script; análisis del log del simulacro ([`ia/bitacora_u5_seguridad.md`](ia/bitacora_u5_seguridad.md), [`ia/duia_u5_seguridad_roles.md`](ia/duia_u5_seguridad_roles.md)) | Se corrigieron nombres de objetos; OpenCode interpretó el escalamiento denegado como un defecto en lugar de un control que funcionó |
 | U6 | Kiro (spec y script de respaldo), Claude Code (partes 2 a 5) | Scripts de mantenimiento, simulacro, informe ([`ia/bitacora_u6_mantenimiento.md`](ia/bitacora_u6_mantenimiento.md), [`ia/duia_tp6.md`](ia/duia_tp6.md)) | Se corrigió la base de origen de la spec: `foodstore` está vacía y el origen correcto es `foodstore_desarrollo` |
 | U7 | Claude Code (Sonnet 5.5) | Consultas, verificación y comparación de tecnologías ([`ia/duia_tp7.md`](ia/duia_tp7.md)) | Dos afirmaciones de la IA se contrastaron en el laboratorio (integridad y transacciones multidocumento) |
@@ -119,7 +105,3 @@ Las declaraciones completas (DUIA, con prompt o spec, qué generó, qué se acep
 4. Todo lo entregado puede explicarse en la defensa: [`defensa/guion_defensa.md`](defensa/guion_defensa.md).
 
 ---
-
-## 6. Notas
-
-No hay pendientes de la Unidad 4. El script `tp_fnbc_control_lote.sql` entregado contiene solo las tablas descompuestas y la vista (sin el esquema original ni la instancia), y el informe muestra la vista vacía; por eso se agregó `tp_fnbc_migracion_y_reversion.sql`.
