@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>TP8 — Informe</title>
+<style>
+@page { size: A4; margin: 14mm 15mm; }
+body { font-family: "Segoe UI", Calibri, Arial, sans-serif; font-size: 9.6pt; line-height: 1.38; color: #1c2430; }
+h1 { font-size: 16pt; color: #1b2a49; margin: 0 0 4px; }
+h2 { font-size: 12.5pt; color: #0f7b84; border-bottom: 1px solid #cfd8dc; padding-bottom: 2px; margin: 14px 0 6px; }
+p { margin: 4px 0 6px; }
+code { font-family: Consolas, "Courier New", monospace; font-size: 8.6pt; background: #eef2f4; padding: 0 2px; border-radius: 2px; }
+pre { font-family: Consolas, "Courier New", monospace; font-size: 8.2pt; background: #eef2f4; border-left: 3px solid #0f7b84; padding: 5px 8px; margin: 4px 0 6px; white-space: pre-wrap; }
+table { border-collapse: collapse; width: 100%; margin: 4px 0 8px; font-size: 8.8pt; }
+th { background: #1b2a49; color: #fff; text-align: left; padding: 3px 5px; }
+td { border: 1px solid #d5dde1; padding: 3px 5px; vertical-align: top; }
+tr { page-break-inside: avoid; }
+.meta { color: #3b4655; }
+</style></head><body>
+
+<h1>TP8 — Food Store en la feria: la base de la tablet y el cierre de la capa de datos</h1>
+<p class="meta">Base de Datos II · UTN TUP · Equipo: Agustina Fontagnol, Gianella Peña, Martina Suarez · 4 de noviembre de 2026</p>
+<p>Todo con datos de prueba y sobre la copia <code>foodstore_desarrollo</code> (servidor) y <code>movil/foodstore_movil.db</code> (tablet). Los scripts están en <code>movil/</code> y <code>db/</code>; este informe solo muestra lo que se pide.</p>
+
+<h2>1.a Qué datos viajan</h2>
+<table>
+<tr><th>Columna de <code>productos</code></th><th>Viaja</th><th>Cómo llega a la tablet</th></tr>
+<tr><td><code>id</code>, <code>nombre</code></td><td>Sí</td><td>tal cual</td></tr>
+<tr><td><code>precio</code></td><td>Sí</td><td><code>precio_centavos</code> (entero)</td></tr>
+<tr><td><code>stock</code></td><td>Sí</td><td><code>stock_visto</code> (lo que vio la tablet, no el real)</td></tr>
+<tr><td><code>disponible</code>, <code>eliminado</code></td><td>Sí</td><td>0 o 1; las bajas lógicas viajan como lápidas</td></tr>
+<tr><td><code>descripcion</code>, <code>imagen</code>, <code>categoria_id</code></td><td>No</td><td>no hacen falta para vender en la feria</td></tr>
+<tr><td><code>created_at</code>, <code>updated_at</code>, <code>deleted_at</code></td><td>No</td><td>auditoría del servidor</td></tr>
+<tr><td>Tabla <code>clientes</code> (contraseña, mail, celular)</td><td>No</td><td>datos personales: nunca salen del servidor</td></tr>
+</table>
+<p>Viaja lo mínimo para mostrar el catálogo y armar un borrador sin señal. PostgreSQL es la fuente de verdad de precio, stock y ventas: la tablet solo guarda una copia de lectura y propone pedidos.</p>
+
+<h2>2.c Los casos</h2>
+<p>Fecha de la copia (<code>servidor_snapshot.csv</code>): 2026-11-03 11:19:48-03 (10 productos exportados de <code>v_snapshot_movil</code>). En cada caso, <code>python movil/simulador_casos.py</code> cambia datos <b>en PostgreSQL</b> (<code>foodstore_desarrollo</code>): abre una transacción, aplica el <code>UPDATE</code>, exporta <code>v_snapshot_movil</code> a un CSV nuevo desde esa misma transacción y hace <code>ROLLBACK</code>; después importa el CSV en <code>snapshot_servidor</code> y corre <code>semaforo.sql</code>. Los identificadores son UUID v4 (el esquema lo exige con un <code>CHECK</code>); abajo se abrevian con los primeros 8 caracteres.</p>
+
+<p><b>C2 — sube el precio.</b> Borrador de 2 unidades del producto 1 a 12063 centavos; el servidor sube el producto 1 a 14000.</p>
+<pre>-- PostgreSQL: BEGIN; UPDATE productos SET precio = 140.00 WHERE id = 1;  (exportar v_snapshot_movil; ROLLBACK)
+-- a8b5fbe6… | CONFLICTO | Precio cambió en producto 1: visto=12063, actual=14000
+UPDATE item_borrador SET precio_centavos_visto = 14000 WHERE id_local = 'c1abcbf0-…' AND producto_id = 1;
+INSERT INTO cola_sync (solicitud_uuid, id_local, estado) VALUES ('4e790513-…', 'c1abcbf0-…', 'PENDIENTE');
+-- 4e790513… | SIMULADO_APROBADO</pre>
+<p>El semáforo encontró el precio distinto y no había rojo, así que dio amarillo. El cliente aceptó, se actualizó el borrador y la solicitud nueva dio verde; la primera queda como CONFLICTO. La segunda solicitud se admite porque la anterior ya no está PENDIENTE (índice único parcial <code>ux_cola_sync_una_pendiente</code>).</p>
+
+<p><b>C3 — más unidades de las que quedan.</b> La tablet ve 61 unidades del producto 2 y el borrador pide 50 (válido con la copia local); el servidor baja el stock a 10.</p>
+<pre>-- PostgreSQL: BEGIN; UPDATE productos SET stock = 10 WHERE id = 2;  (exportar v_snapshot_movil; ROLLBACK)
+-- a179e489… | RECHAZADO | Stock insuficiente en producto 2: pedido=50, stock=10</pre>
+<p><code>cantidad &gt; stock_visto</code> de la instantánea nueva es un rojo: el pedido no se puede cumplir aunque la tablet no se haya enterado.</p>
+
+<p><b>C4 — producto dado de baja.</b> Borrador con 2 unidades del producto 3; el servidor da de baja el producto 3.</p>
+<pre>-- PostgreSQL: BEGIN; UPDATE productos SET eliminado = TRUE WHERE id = 3;  (exportar v_snapshot_movil; ROLLBACK)
+-- 86f12151… | RECHAZADO | Producto 3 dado de baja
+-- catálogo disponible: ids 1, 2, 4 a 10   |   producto_cache id=3: eliminado=1 (la fila queda)</pre>
+<p>La baja es un rojo. Al recargar, <code>WHERE disponible = 1 AND eliminado = 0</code> ya no lista el producto, pero la fila sigue en <code>producto_cache</code> porque el borrador la referencia.</p>
+
+<p><b>C5 — sin cambios.</b> Borrador de 2 unidades del producto 4 a 17272, igual al servidor.</p>
+<pre>-- 38f3809c… | SIMULADO_APROBADO</pre>
+<p>Todo coincide: verde. No es una venta; solo el servidor puede confirmarla y descontar stock.</p>
+
+<p><b>C6 — reenviar la misma solicitud.</b></p>
+<pre>INSERT INTO cola_sync (solicitud_uuid, id_local, estado) VALUES ('38f3809c-…', 'cb420e06-…', 'PENDIENTE');
+-- Error: UNIQUE constraint failed: cola_sync.solicitud_uuid
+-- PostgreSQL: BEGIN; UPDATE productos SET precio = 9.99 WHERE id = 4;  (exportar; ROLLBACK)  y repetir el semáforo
+-- 38f3809c… | SIMULADO_APROBADO (sin cambios)</pre>
+<p>El UUID repetido choca con la clave primaria y no se duplica; como el semáforo solo toma las PENDIENTE, repetirlo no reevalúa una solicitud ya resuelta. En un sistema real la protección iría en el servidor (parada 8): una tabla de solicitudes procesadas con el UUID como clave única, que devuelva el resultado anterior en lugar de volver a confirmar la venta.</p>
+
+<p><b>Registro de evaluaciones.</b> Cada resolución del semáforo queda en <code>evaluacion_sync</code> (estado, motivo y fecha de la instantánea usada), cargada por un trigger. Tras los casos hay 6 filas para 6 solicitudes: repetir el semáforo en C6 no agregó ninguna.</p>
+
+<p><b>PostgreSQL no cambió.</b> Consulta de control de <code>db/vista_snapshot.sql</code> sobre <code>foodstore_desarrollo</code>, que el simulador corre antes y después de los casos:</p>
+<table>
+<tr><th>Valor en PostgreSQL</th><th>Antes</th><th>Después</th><th>¿Cambió?</th></tr>
+<tr><td>Pedidos (<code>pedidos</code>)</td><td>200000</td><td>200000</td><td>No</td></tr>
+<tr><td>Detalles (<code>detalle_pedido</code>)</td><td>600000</td><td>600000</td><td>No</td></tr>
+<tr><td>Stock total de los productos 1 a 10</td><td>553</td><td>553</td><td>No</td></tr>
+<tr><td>Suma de precios de los productos 1 a 10</td><td>2646.99</td><td>2646.99</td><td>No</td></tr>
+<tr><td>Productos 1 a 10 dados de baja</td><td>0</td><td>0</td><td>No</td></tr>
+<tr><td>Huella md5 (id, precio, stock, eliminado)</td><td><code>23b70cf6f125e3adec95513c054359b3</code></td><td><code>23b70cf6f125e3adec95513c054359b3</code></td><td>No</td></tr>
+</table>
+<p>Los cambios de precio, stock y baja de C2, C3, C4 y C6 se hicieron en PostgreSQL dentro de <code>BEGIN</code> y terminaron en <code>ROLLBACK</code>, por eso la huella es idéntica. La tablet nunca escribe en el servidor.</p>
+
+<h2>3.a Mapa de la capa de datos</h2>
+<table>
+<tr><th>Motor</th><th>Qué guarda</th><th>Quién manda</th></tr>
+<tr><td><b>PostgreSQL</b> (<code>foodstore_desarrollo</code>)</td><td>catálogo completo, precios, stock, clientes, pedidos y su detalle</td><td><b>Es la fuente de verdad</b> de precio, stock y ventas; confirma o rechaza</td></tr>
+<tr><td><b>MongoDB</b> (<code>foodstore_u7.pedidos</code>, Unidad 7)</td><td>copia documental de los pedidos 1 a 10 con líneas y cliente embebidos</td><td>PostgreSQL; MongoDB es una copia para consultar, no decide nada</td></tr>
+<tr><td><b>SQLite</b> (<code>foodstore_movil.db</code>, tablet)</td><td><code>producto_cache</code> (copia de lectura), borradores, ítems, <code>cola_sync</code> y su registro <code>evaluacion_sync</code></td><td>PostgreSQL manda sobre el catálogo; sobre los borradores manda la tablet, pero no valen como venta</td></tr>
+</table>
+<pre>PostgreSQL ──migración──► MongoDB        (pedidos, solo lectura)
+PostgreSQL ──snapshot CSV─► SQLite       (catálogo)
+SQLite ──solicitud (UUID)─► PostgreSQL   (propone; el servidor valida y decide)</pre>
+
+<h2>3.b Plan de mantenimiento (agregado al plan de la Unidad 6)</h2>
+<p><b>¿Qué se respalda y cómo se prueba la restauración?</b></p>
+<ul>
+<li><b>PostgreSQL</b> (crítico): <code>pg_dump -Fc</code> con el script de la Unidad 6. La restauración se prueba en <code>foodstore_restore_test</code> comparando conteos de tablas, como en el simulacro de U6.</li>
+<li><b>MongoDB</b> (<code>foodstore_u7</code>): <code>mongodump</code> de <code>pedidos</code>; se prueba con <code>mongorestore</code> en otra base y <code>countDocuments()</code> igual a 10. Si se pierde, se regenera desde PostgreSQL con <code>migrar_pedidos.js</code>.</li>
+<li><b>SQLite</b>: no se respalda el archivo; se recrea con <code>schema_sqlite.sql</code> + <code>carga_snapshot.sql</code> y se prueba con <code>pruebas_sqlite.sql</code>. Lo único que no se recupera son los borradores sin sincronizar, por eso se envían al terminar cada día de feria.</li>
+</ul>
+<p><b>Si se restaura un respaldo viejo de PostgreSQL, ¿qué hacen las tablets?</b> Pueden tener una copia más nueva que el servidor, con stock y precios que ya no existen allá. No confían en su cache: bajan una instantánea nueva completa (reemplaza <code>producto_cache</code>), crean una solicitud nueva (UUID nuevo) por cada borrador sin confirmar y vuelven a correr el semáforo, así lo que ya no coincide queda en CONFLICTO o RECHAZADO. Las ventas confirmadas después del respaldo se concilian aparte, desde el servidor.</p>
+<p><b>¿Cada cuánto y quién revisa CONFLICTO y RECHAZADO?</b> Cada vendedor, en su tablet, antes de reconectar y al cierre de cada día de feria (decide: aceptar el precio nuevo, achicar la cantidad o descartar); el historial queda en <code>evaluacion_sync</code>. El supervisor revisa semanalmente los pedidos que quedaron sin resolver.</p>
+
+<h2>3.c Code review con IA</h2>
+<p><b>Alcance.</b> OpenCode (agente Plan) revisó <code>parcial1_02</code> a <code>parcial1_10</code> (hallazgos 1 a 5). La revisión se completó con Claude Code sobre el resto de los scripts de la cursada: <code>parcial1_01</code>, los 6 anexos de TP5 (<code>db/anexos_tps/</code>), los 8 scripts de <code>sql/</code> (U5 y U6: roles, anonimización, auditoría, simulacro, respaldo, restauración, health check y mantenimiento), las copias de <code>entrega_tp6/sql</code> y los 5 de <code>entrega_tp7</code> (hallazgos 6 a 14). El inventario completo por unidad (U1 a U8, 35 archivos) está en <code>docs/inventario_scripts.md</code>. Las pruebas de PostgreSQL se corrieron en una copia descartable de <code>foodstore_desarrollo</code> (<code>foodstore_tp8_verif</code>, restaurada de un <code>pg_dump</code> y ya eliminada), porque <code>parcial1_03</code>, <code>_07</code> y <code>_08</code> no están aplicados en la base de trabajo; las de MongoDB, en una colección temporal.</p>
+<table>
+<tr><th>#</th><th>Unidad</th><th>Hallazgo</th><th>Decisión</th><th>Motivo y cómo se comprobó en la base</th></tr>
+<tr><td>1</td><td>U3 Transacciones</td><td>Posible race condition en <code>sp_crear_pedido</code> por <code>FOR UPDATE</code> dentro del loop</td><td><b>Descartado</b></td><td><code>GROUP BY ... ORDER BY 1</code> ordena siempre igual los bloqueos, así que no hay deadlock. Con stock 1 en el producto 7 y dos sesiones: la B queda esperando (<code>wait_event_type = Lock</code>, <code>wait_event = transactionid</code>); al hacer COMMIT la A, la B falla con <code>Stock insuficiente para 7: pedido 1, disponible 0</code>. Stock final 0 y un solo pedido nuevo</td></tr>
+<tr><td>2</td><td>U2 Índices</td><td>El índice parcial <code>idx_productos_categoria_eliminado</code> no se usa sin <code>eliminado = FALSE</code></td><td><b>Corregido</b> (ya mitigado)</td><td>Sin el predicado el plan es <code>Seq Scan</code> aun con <code>enable_seqscan = off</code>; con <code>eliminado = FALSE</code> usa un índice parcial: <code>idx_tp4_prod_cat</code> (de TP4) y, al quitarlo, <code>idx_productos_categoria_eliminado</code>. La vista <code>v_productos_vigentes_con_categoria</code> ya incluye el filtro</td></tr>
+<tr><td>3</td><td>U4 Vistas</td><td>Agregar <code>CHECK (total_facturado &gt;= 0)</code> a <code>mv_facturacion_categoria_mes</code></td><td><b>Descartado</b></td><td><code>CREATE MATERIALIZED VIEW ... CHECK</code> da error de sintaxis en o cerca de «CHECK»; PostgreSQL solo admite CHECK en tablas. <code>chk_detalle_subtotal</code> rechaza un INSERT con subtotal <code>-200.00</code> y la vista tiene 0 filas negativas de 65</td></tr>
+<tr><td>4</td><td>U6 Seguridad</td><td>Contraseñas en texto plano (<code>'hash_de_prueba'</code>) en los datos de prueba de <code>parcial1_09</code> y <code>parcial1_10</code></td><td><b>Aceptado y corregido</b></td><td>El riesgo es real: el patrón puede copiarse. En ambos scripts se reemplazó por un hash falso con formato bcrypt y un comentario de seguridad. <code>grep hash_de_prueba db/*.sql</code> no da resultados y los dos scripts corren completos en la copia (los errores que muestran son las demostraciones del propio script)</td></tr>
+<tr><td>5</td><td>U2 Índices</td><td>Falta un índice sobre <code>pedidos.fecha</code> para consultas por rango</td><td><b>Descartado</b></td><td>Rango de enero de 2026 (3925 pedidos): aun creando un índice solo sobre <code>fecha</code>, el plan sigue usando <code>idx_tp4_q1_fast (estado, fecha)</code> y no el nuevo (4,5 ms). Sin los índices de TP4, el rango lo resuelve <code>idx_pedidos_estado_eliminado_fecha</code> (Bitmap Index Scan, 3925 filas, ninguna descartada)</td></tr>
+<tr><td>6</td><td>Parcial 1 (DDL)</td><td><code>clientes.rol</code> es <code>VARCHAR(50)</code> sin restricción</td><td><b>Aceptado</b> (a aplicar)</td><td>Un INSERT con <code>rol = 'CUALQUIER_COSA'</code> y otro con <code>'HACKER'</code> se aceptan (ROLLBACK después). Corrección: <code>CHECK (rol IN (...))</code> con los roles reales o un tipo enumerado</td></tr>
+<tr><td>7</td><td>Parcial 1 (DDL)</td><td><code>chk_cliente_mail</code> (<code>POSITION('@' IN mail) &gt; 1</code>) es débil</td><td><b>Descartado</b></td><td>Acepta <code>x@</code> y <code>a@@b</code> (comprobado con INSERT y ROLLBACK). Es una red mínima a propósito: validar el formato completo con una regex en la base rechazaría mails válidos y esa validación corresponde a la aplicación</td></tr>
+<tr><td>8</td><td>Parcial 1 (DML)</td><td><code>parcial1_04</code> dice «Variante B (desactivada)» pero <code>TRUNCATE categorias ... CASCADE</code> (línea 43) está sin comentar</td><td><b>Aceptado</b> (a aplicar)</td><td>Contradice el encabezado («se conservan categorías, no se truncan»). En la copia, dentro de BEGIN/ROLLBACK: <code>categorias</code> pasa de 5 a 0 y el <code>CASCADE</code> también vacía <code>productos</code> y <code>detalle_pedido</code> (50000 productos antes). Corrección: comentar el bloque de la variante B</td></tr>
+<tr><td>9</td><td>Parcial 1 (consultas)</td><td>El top 10 de productos más vendidos (<code>ORDER BY unidades_vendidas DESC LIMIT 10</code>) no desempata</td><td><b>Aceptado</b> (a aplicar)</td><td>En la base los puestos 9 a 12 tienen 60 unidades cada uno (ids 31380, 40800, 29020, 40140), así que qué producto entra en el top 10 queda al azar del plan. Corrección: agregar <code>, pr.id</code> al <code>ORDER BY</code></td></tr>
+<tr><td>10</td><td>U5 Roles</td><td><code>ALTER DEFAULT PRIVILEGES FOR ROLE admin_datos ... GRANT SELECT ON TABLES TO rol_reportes</code> contradice «solo vistas, nunca tablas base»</td><td><b>Aceptado</b> (a aplicar)</td><td>Reproducido en una transacción: <code>admin_datos</code> crea una tabla nueva y <code>has_table_privilege('rol_reportes', tabla, 'SELECT')</code> da <code>t</code>, así que cualquier tabla futura (por ejemplo con datos de clientes) queda legible. Corrección: quitar ese <code>ALTER DEFAULT PRIVILEGES</code> y otorgar permisos por objeto</td></tr>
+<tr><td>11</td><td>U5 Auditoría</td><td><code>auditoria_test.sql</code> pide activar <code>log_failed_auth = on</code> (PG 14+)</td><td><b>Aceptado</b> (a aplicar)</td><td><code>SHOW log_failed_auth</code> da <i>parámetro de configuración «log_failed_auth» no reconocido</i>: no existe en PostgreSQL 17. Los fallos de autenticación se registran siempre como FATAL; corrección: quitar la línea del encabezado</td></tr>
+<tr><td>12</td><td>U7 MongoDB</td><td><code>verificacion_integridad.js</code>, R1b: imprime <code>...toArray().length</code> como cantidad de líneas inconsistentes</td><td><b>Aceptado</b> (a aplicar)</td><td>Con <code>$count</code>, el arreglo tiene 0 o 1 elementos. En una colección temporal con 3 líneas inconsistentes el script imprimiría 1 (el valor correcto, <code>r[0].n</code>, es 3). Hoy da 0 y es correcto, pero no detectaría la magnitud de un error. Corrección: leer <code>r[0]?.n ?? 0</code></td></tr>
+<tr><td>13</td><td>TP5 anexos</td><td><code>parte5_competencia.sql</code> usa <code>producto</code>, <code>id_categoria</code> e <code>id_producto</code>, que no existen en <code>foodstore</code></td><td><b>Descartado</b></td><td>No es un error del script: la tabla <code>producto</code> existe en <code>foodstore_tpi</code>, la base del TP3 a la que está dirigido; en <code>foodstore_desarrollo</code> solo existe <code>productos</code>. Cada bloque ya está envuelto en BEGIN/ROLLBACK</td></tr>
+<tr><td>14</td><td>U6 Respaldo</td><td><code>sql/</code> y <code>entrega_tp6/sql/</code> tienen los mismos 4 scripts duplicados</td><td><b>Descartado</b></td><td><code>cmp</code> confirma que los 4 archivos son idénticos; la copia en <code>entrega_tp6</code> es parte de la entrega de esa unidad y mantenerlas iguales es más barato que referenciar rutas externas</td></tr>
+</table>
+<p>Revisados sin otros hallazgos: <code>parcial1_02</code> a <code>_10</code> (más allá de los hallazgos 1 a 5), <code>usuario_anon.sql</code>, <code>simulacro_incidente.sql</code>, <code>health_check.sql</code>, <code>maintenance.sql</code>, <code>backup_foodstore.ps1</code>, <code>restore_test.ps1</code>, <code>benchmark_vista_materializada.sql</code>, <code>tp5_mediciones_pendientes.sql</code>, <code>verificacion_vistas_parteB.sql</code>, <code>vistas_reportes_*</code> y los scripts de <code>entrega_tp7</code> salvo el R1b.</p>
+</body></html>

@@ -34,8 +34,11 @@ BEGIN;
 INSERT INTO categorias (nombre, descripcion)
 VALUES ('TPI_TX_Categoria', 'Datos de prueba de parcial1_09_transacciones.sql');
 
+-- SEGURIDAD: en un sistema real 'contrasenia' guarda SIEMPRE un hash generado por
+-- la aplicación (bcrypt, argon2), nunca texto plano. Acá va un hash falso de prueba.
 INSERT INTO clientes (nombre, apellido, mail, celular, contrasenia, rol)
-VALUES ('TPI_TX', 'Cliente', 'tpi_tx@test.com', '000000', 'hash_de_prueba', 'CLIENTE');
+VALUES ('TPI_TX', 'Cliente', 'tpi_tx@test.com', '000000',
+        '$2b$12$dummyhashforTESTpurposeonly1234567890abcdefghij', 'CLIENTE');
 
 INSERT INTO productos (nombre, precio, stock, disponible, categoria_id)
 SELECT 'TPI_TX_Prod_A', 100.00, 10, TRUE, id FROM categorias WHERE nombre = 'TPI_TX_Categoria';
