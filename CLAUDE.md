@@ -1,12 +1,12 @@
 # Foodstore Database TP2 - Instrucciones para Agentes
 
 ## Contexto del Proyecto
-Este repositorio es la entrega **Parcial 1 del TPI «Food Store»** (`Informe_Parcial_1.md` en la raíz). Contiene el esquema de PostgreSQL de una tienda de alimentos (`foodstore`) en `db/parcial1_01_ddl_schema.sql` (antes `Script.sql`) y los trabajos prácticos que lo componen; el TP2 trató sobre integridad, transacciones y concurrencia.
+Este repositorio es la entrega **Parcial 1 del TPI «Food Store»** (`docs/informes/Informe_Parcial_1.md`). Contiene el esquema de PostgreSQL de una tienda de alimentos (`foodstore`) en `postgres/schema/parcial1_01_ddl_schema.sql` (antes `Script.sql`) y los trabajos prácticos que lo componen; el TP2 trató sobre integridad, transacciones y concurrencia.
 
 ## Reglas Críticas (No negociables por la cátedra)
 
 ### 1. Protocolo de Seguridad de 3 Pasos
-Antes de ejecutar cualquier script o comando que afecte a la base de datos (propio o sugerido por la IA), debes documentar e implementar estos tres pasos en `protocolo_seguridad.md`:
+Antes de ejecutar cualquier script o comando que afecte a la base de datos (propio o sugerido por la IA), debes documentar e implementar estos tres pasos en `docs/ia/protocolo_seguridad.md`:
 *   **Copia de Trabajo:** Nunca operar directamente sobre la base de datos original. Trabajar siempre sobre una copia local creada con:
     ```powershell
     createdb -T foodstore foodstore_desarrollo
@@ -42,7 +42,7 @@ Cada parte completada con IA debe incluir o acompañar una DUIA con la siguiente
 
 ## Entregables Clave (Ubicación y Nombre Exactos en la Raíz)
 
-*   **`protocolo_seguridad.md`**: Detalla los comandos reales de copia, transacción y respaldo para el entorno PostgreSQL local sobre Windows (PowerShell 5.1).
+*   **`docs/ia/protocolo_seguridad.md`**: Detalla los comandos reales de copia, transacción y respaldo para el entorno PostgreSQL local sobre Windows (PowerShell 5.1).
 *   **Script de Restricciones + DUIA**: Archivo SQL con las 2 o 3 restricciones de integridad/triggers elegidas de las tablas `pedidos`, `productos` o `detalle_pedido` (p. ej., control de transiciones de estado, totales calculados o precios/stock coherentes), acompañados por la DUIA correspondiente.
 *   **`informe_concurrencia.md`**: Documentación de 3 anomalías concurrentes reproducidas con dos sesiones de psql o DBeaver en paralelo (Lectura no repetible, Lectura fantasma y Espera por bloqueo), adjuntando explicaciones de la IA, verificación y DUIA.
 *   **`ejercicio_lectura_critica.md`**: Análisis de vulnerabilidad/error para los dos scripts ficticios de la consigna (Script 1 actualiza todo por falta de `WHERE`; Script 2 falla al usar `NOT IN` con subconsultas que retornan `NULL`) y sus versiones corregidas.

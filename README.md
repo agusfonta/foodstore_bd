@@ -1,63 +1,71 @@
-# Food Store — Trabajo Práctico Integrador (TPI) · PARCIAL 1 (primera entrega parcial)
+# Food Store — Capa de datos completa (relacional · documental · móvil)
 
-**Materia:** Base de Datos II · **Motor:** PostgreSQL 16+ con PL/pgSQL (probado en 17.11)
-**Integrantes:** Gianella Peña, Martina Suarez y Agustina Fontagnol
-**Alcance:** Unidades 1, 2 y 3 — integridad, transacciones y concurrencia · optimización de consultas · índices, vistas y objetos programables.
+**Materia:** Base de Datos II · **Equipo:** Gianella Peña, Martina Suarez, Agustina Fontagnol
+**Motores:** PostgreSQL 16+ (PL/pgSQL) · MongoDB · SQLite 3.37+
 
-> Este repositorio contiene la **primera entrega parcial del TPI «Food Store»**. Los trabajos prácticos TP3, TP4 y TP5 (optimización, reportes, índices) son partes que se integran en la entrega y están en `Informes_tps/`.
+Un único proyecto: la base relacional (`postgres/`), su extensión documental (`mongodb/`) y la base de la tablet (`movil/`), con sus specs, informes y registro de uso de IA. El código se organiza **por componente**; la relación con cada consigna está en la matriz de trazabilidad de abajo.
 
-## Empezar por acá
+## Mapa del repositorio
 
-📄 **[`Informe_Parcial_1.md`](Informe_Parcial_1.md)** (informe del Parcial 1) — informe técnico (qué se implementó por unidad, cómo se probó, resultados, optimizaciones antes/después y uso de IA) con el **checklist de los 9 objetivos**.
-
-> **Cómo encontrar los archivos:** todo lo que corresponde al Parcial 1 lleva `parcial1` / `Parcial1` / `Parcial_1` en el nombre: `Informe_Parcial_1.md` (raíz), `db/parcial1_*.sql`, `docs/parcial1_*.md`, `docs/informes/parcial1_*.md`, `docs/duia/duia_parcial1_correcciones.md` y `Informes_tps/Parcial1_*.md`.
-
-## Checklist de objetivos → dónde está la evidencia
-
-| # | Objetivo | Archivo |
-| :-: | :--- | :--- |
-| 1 | Modelo ER (entidades, atributos, claves, cardinalidad, participación) | [`docs/parcial1_01_modelo_er.md`](docs/parcial1_01_modelo_er.md) · TP1 del equipo: [`TP1 (docx)`](Informes_tps/TP1_FoodStore_ModeloER_Normalizacion_DDL.docx) y [`diagrama`](docs/img/TP1_diagrama_ER_pata_de_gallo.png) |
-| 2 | Paso de ER a modelo relacional (1:N y N:M con tabla intermedia) | [`docs/parcial1_02_modelo_relacional.md`](docs/parcial1_02_modelo_relacional.md) · TP1, Parte 2 |
-| 3 | Normalización hasta 3FN/BCNF con dependencias funcionales | [`docs/parcial1_03_normalizacion.md`](docs/parcial1_03_normalizacion.md) · TP1, Parte 3 |
-| 4 | DDL completo (tipos, PK, FK, restricciones, índices) | [`db/parcial1_01_ddl_schema.sql`](db/parcial1_01_ddl_schema.sql) · [`db/parcial1_03_ddl_indices.sql`](db/parcial1_03_ddl_indices.sql) |
-| 5 | DML y consultas (JOIN, agregación, subconsultas, GROUP BY/HAVING, ventana) | [`db/parcial1_04_dml_carga_masiva.sql`](db/parcial1_04_dml_carga_masiva.sql) · [`db/parcial1_05_dml_consultas.sql`](db/parcial1_05_dml_consultas.sql) |
-| 6 | Vistas, funciones y procedimientos (PL/pgSQL, `CALL`) | [`db/parcial1_06_vistas.sql`](db/parcial1_06_vistas.sql) · [`db/parcial1_07_vista_materializada.sql`](db/parcial1_07_vista_materializada.sql) · [`db/parcial1_08_funciones_procedimientos_plpgsql.sql`](db/parcial1_08_funciones_procedimientos_plpgsql.sql) |
-| 7 | Reglas de negocio (CHECK, UNIQUE, triggers) | [`db/parcial1_02_reglas_negocio_check_unique_triggers.sql`](db/parcial1_02_reglas_negocio_check_unique_triggers.sql) |
-| 8 | Transacciones: atomicidad, COMMIT, ROLLBACK, aislamiento, concurrencia | [`db/parcial1_09_transacciones.sql`](db/parcial1_09_transacciones.sql) · [`docs/informes/parcial1_informe_concurrencia.md`](docs/informes/parcial1_informe_concurrencia.md) · [`capturas/`](capturas) |
-| 9 | Borrado lógico y su impacto en consultas e índices | [`db/parcial1_10_borrado_logico.sql`](db/parcial1_10_borrado_logico.sql) |
-
-## Orden de ejecución de los scripts (`db/`)
-
-Trabajar siempre sobre la **copia** de la base, nunca sobre la original (ver [`protocolo_seguridad.md`](protocolo_seguridad.md)):
-
-```powershell
-createdb -U postgres -h localhost -p 5432 -T foodstore foodstore_desarrollo
+```
+postgres/
+├── schema/            DDL, reglas de negocio (CHECK/UNIQUE/triggers), índices
+├── normalizacion/     TP U4: FNBC de control_lote_almacen y vista materializada de top categorías
+├── programabilidad/   vistas, vista materializada, funciones/procedimientos, transacciones, borrado lógico
+├── datos/             carga masiva, consultas DML, vista_snapshot (fuente de la sincronización móvil)
+├── seguridad/         roles, auditoría, simulacro de acceso indebido, usuario anonimizado
+├── mantenimiento/     backup, restore_test, health_check, maintenance
+└── experimentos/      benchmark, competencia de optimización, verificación de vistas
+mongodb/               exportación, migración, verificación de integridad, consultas Mongo y SQL, datos
+movil/                 esquema SQLite, carga, semáforo, pruebas, simulador de conflictos, base de la tablet
+specs/                 specs Kiro/EARS por componente (relacional, seguridad, mantenimiento, movil, normalizacion)
+docs/
+├── modelo/            ER, modelo relacional, normalización, diagrama
+├── informes/          informes por tema (ver docs/informes/README.md)
+├── ia/                protocolo de seguridad, bitácoras de IA y DUIA (ver docs/ia/README.md)
+├── defensa/           guion de defensa oral
+├── evidencias/        capturas y logs (concurrencia, seguridad)
+├── consignas/         enunciados originales, incluido el PDF de condiciones de la segunda entrega
+└── _archivo_duplicados/  copias idénticas de archivos que ya están arriba (nada se borró)
+backups/  logs/        respaldos y logs que usan los scripts de mantenimiento
 ```
 
-| Orden | Script | Contenido |
-| :-: | :--- | :--- |
-| 01 | `parcial1_01_ddl_schema.sql` | Tipos `ENUM`, tablas, PK, FK, `CHECK`, `UNIQUE` (incluye `CREATE DATABASE foodstore`: conectarse a esa base antes de seguir con el resto) |
-| 02 | `parcial1_02_reglas_negocio_check_unique_triggers.sql` | `CHECK` de subtotal y 2 triggers (transición de estado, baja de cliente) |
-| 03 | `parcial1_03_ddl_indices.sql` | Índices compuestos, parciales y *covering* |
-| 04 | `parcial1_04_dml_carga_masiva.sql` | Carga de 20.000 clientes, 50.000 productos, 200.000 pedidos, 600.000 renglones (solo en la copia de desarrollo; hace `TRUNCATE`) |
-| 05 | `parcial1_05_dml_consultas.sql` | Consultas de reporte, `HAVING`, ventana, DML de ejemplo |
-| 06 | `parcial1_06_vistas.sql` | 3 vistas de reportes |
-| 07 | `parcial1_07_vista_materializada.sql` | `mv_facturacion_categoria_mes` |
-| 08 | `parcial1_08_funciones_procedimientos_plpgsql.sql` | 3 funciones y 5 procedimientos (`CALL`) |
-| 09 | `parcial1_09_transacciones.sql` | Pruebas de atomicidad, `COMMIT`/`ROLLBACK`, aislamiento y concurrencia |
-| 10 | `parcial1_10_borrado_logico.sql` | Pruebas de borrado lógico, índices parciales y `UNIQUE` |
+## Matriz de trazabilidad — Segunda entrega (U4–U8)
 
-Los scripts 09 y 10 crean datos de prueba y los eliminan al terminar.
+Fuente: `docs/consignas/Condiciones_de_Entrega_TPI_Segunda_entrega.pdf`.
 
-## Otros archivos
+| Unidad | Objetivo exigido | Evidencia |
+| :-- | :-- | :-- |
+| **U4** | Refactor a BCNF validado con dependencias funcionales | `docs/informes/informe_u4_fnbc_desnormalizacion.pdf` (DFs, clausuras, claves candidatas, anomalías), `postgres/normalizacion/tp_fnbc_control_lote.sql`; antecedente: `docs/modelo/parcial1_03_normalizacion.md` |
+| U4 | Migración sin pérdida en transacción reversible, spec Kiro, plan de reversión | Descomposición sin pérdida (Heath) y vista de compatibilidad en el informe y `tp_fnbc_control_lote.sql`; migración con `BEGIN … ROLLBACK` y reversión en `postgres/normalizacion/tp_fnbc_migracion_y_reversion.sql` (ejecutado el 04/11/2026: `docs/informes/evidencias_u4_ejecucion.md`); spec Kiro en `specs/normalizacion/` |
+| U4 | Desnormalización controlada documentada | `postgres/normalizacion/tp_desnormalizacion_top_categorias.sql` e informe U4 (EXPLAIN 157,459 ms → 0,177 ms, auditoría de sincronía); además `docs/modelo/parcial1_03_normalizacion.md` (secciones 5 y 6) y `docs/informes/parcial1_politica_refresh.md` |
+| **U5** | Usuarios, roles y permisos de mínimo privilegio | `postgres/seguridad/roles.sql`, `specs/seguridad/kiro_roles/` |
+| U5 | Auditoría activada + simulacro de acceso indebido + contención | `postgres/seguridad/auditoria_test.sql`, `simulacro_incidente.sql`, `docs/informes/informe_incidente_acceso_indebido.md`, `docs/evidencias/seguridad/` |
+| U5 | Auditoría de seguridad asistida por IA, decisión humana | `docs/informes/informe_auditoria_permisos.md`, `docs/ia/bitacora_u5_seguridad.md` |
+| **U6** | Plan de mantenimiento: respaldo, restauración probada, tareas rutinarias | `postgres/mantenimiento/`, `specs/mantenimiento/SPEC_U6.md`, `docs/informes/evidencias_u6_mantenimiento.md` |
+| U6 | Simulacro de desastre con informe post-incidente (RTO) | `docs/informes/informe_u6_mantenimiento.pdf`, `logs/restore_test.log`, `backups/` |
+| **U7** | Modelo documental con consultas generadas y verificadas sobre datos reales | `mongodb/`, `docs/informes/modelo_documental_u7.md`, `docs/informes/tabla_verificacion_u7.md` |
+| U7 | Comparación documental vs relacional con justificación | `docs/informes/ia_contraste_u7.md`, `docs/informes/informe_u7_nosql.pdf` |
+| **U8** | Base SQLite y sincronización especificadas en Kiro y generadas con OpenCode | `movil/`, `specs/movil/` |
+| U8 | Sincronización simulada con conflictos probados y resueltos | `movil/simulador_casos.py`, `movil/pruebas_sqlite.sql`, `docs/informes/informe_u8_movil.pdf` |
+| U8 | Code review final asistido por IA, decisión humana por hallazgo | `docs/informes/inventario_scripts.md`, `docs/informes/informe_u8_movil.pdf` |
+| U8 | Capa completa lista para defensa | este repositorio, `docs/defensa/guion_defensa.md` |
+| **IA** | Protocolo de uso de IA (4 reglas), DUIA y bitácora | `docs/ia/` |
+| **Informe técnico** | Resumen de lo implementado, probado, resultados y decisiones | **`docs/informe_tecnico.md`** (informes por unidad en `docs/informes/`) |
 
-| Carpeta / archivo | Contenido |
-| :--- | :--- |
-| `docs/duia/` | Declaraciones de uso de IA de cada parte (la corrección de esta entrega: [`duia_parcial1_correcciones.md`](docs/duia/duia_parcial1_correcciones.md)) |
-| `Informe_Parcial_1.md`, `docs/parcial1_01..03_*.md` | Informe técnico del Parcial 1; modelo ER, relacional y normalización |
-| `docs/informes/` | Informes que acreditan los objetivos 3, 6 y 8: concurrencia, lectura crítica, equivalencia de vistas, bitácora de verificación, benchmark de la vista materializada, política de refresh |
-| `docs/img/` | Imágenes (diagrama ER del TP1) |
-| `Informes_tps/` | Trabajos prácticos del equipo: TP1 (ER, relacional, normalización, DDL), consigna del TP2, TP3, TP4, Parte 5 y el informe de optimización ([`Parcial1_Informe_optimizacion_consultas_indices.md`](Informes_tps/Parcial1_Informe_optimizacion_consultas_indices.md)) |
-| `spec/` | Especificaciones entregadas a la IA |
-| `db/anexos_tps/` | Scripts auxiliares de las partes anteriores: `tp5_mediciones_pendientes.sql`, `parte5_competencia.sql`, `benchmark_vista_materializada.sql`, `verificacion_vistas_parteB.sql`, `vistas_reportes_prompt_*.sql` |
-| `backups/` | Respaldo estructural (`pg_dump`) previo a cambios DDL |
+
+## Cómo ejecutar
+
+Trabajar siempre sobre la copia, nunca sobre `foodstore` (ver `docs/ia/protocolo_seguridad.md`):
+
+```powershell
+createdb -U postgres -T foodstore foodstore_desarrollo
+```
+
+Los scripts de `postgres/schema/` y `postgres/datos/` se ejecutan en el orden de su prefijo `parcial1_NN_`. Los pasos de `movil/` están en `movil/README.md` y los de `mongodb/` en los comentarios de cada script (se corren desde la raíz del repo, p. ej. `mongosh --quiet mongodb/migrar_pedidos.js`). Los scripts de `postgres/mantenimiento/*.ps1` toman la raíz del repo como carpeta de trabajo y escriben en `backups/` y `logs/`.
+
+## Notas de la reorganización
+
+- Solo se movieron archivos y se agregaron índices; no se eliminó ni reescribió contenido. Las únicas ediciones a archivos existentes fueron rutas relativas: raíz del proyecto en los dos `.ps1`, ruta de `vista_snapshot.sql` en `movil/simulador_casos.py`, ruta del `.jsonl` en `mongodb/migrar_pedidos.js`, y los links de los `.md` movidos.
+- `movil/README.md`, `docs/informes/README_parcial1.md` y `docs/informes/inventario_scripts.md` conservan su texto original: pueden nombrar rutas anteriores (`entrega_tp8/`, `db/`, `sql/`).
+- Los scripts de `mongodb/` se ejecutan ahora con `mongodb/…` en lugar de `entrega_tp7/…`.

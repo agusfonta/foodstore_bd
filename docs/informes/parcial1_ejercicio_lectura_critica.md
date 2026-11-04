@@ -1,6 +1,6 @@
 # Ejercicio de Lectura Crítica — TP2 Parte 3: El riesgo fundacional
 
-> **Evidencia del Parcial 1 — Objetivos 5 y 7 (SQL peligroso, integridad).** Ver [`Informe_Parcial_1.md`](../../Informe_Parcial_1.md).
+> **Evidencia del Parcial 1 — Objetivos 5 y 7 (SQL peligroso, integridad).** Ver [`Informe_Parcial_1.md`](Informe_Parcial_1.md).
 
 **Curso:** Base de Datos II — UTN | **Proyecto:** Foodstore (referencia solo para contraste con esquema genérico)
 **Fecha:** 2026-08-28 | **Esquema analizado:** Genérico de cátedra (funcion / pelicula / categoria / producto)
@@ -17,7 +17,7 @@
 
 **Patrón común (PDF §6.2):** En ningún caso hubo alucinación de código inválido ni ataque externo. La sintaxis fue correcta y la intención razonable. Falló el paso humano previo: confirmar contra qué base se corre, leer el efecto real del comando y no confiar en el reporte del propio agente.
 
-**Qué paso del protocolo lo habría evitado (protocolo_seguridad.md):**
+**Qué paso del protocolo lo habría evitado (docs/ia/protocolo_seguridad.md):**
 
 - **Copia (`createdb -T foodstore foodstore_desarrollo`):** el error no toca datos reales; se prueba sobre copia desechable.
 - **Transacción (`BEGIN; ...; ROLLBACK;`):** permite inspeccionar filas afectadas y mensajes antes de confirmar; un `UPDATE` sin `WHERE` se detecta por `ROW_COUNT` masivo y se revierte.

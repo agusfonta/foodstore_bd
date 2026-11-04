@@ -1,11 +1,11 @@
 # Informe de mediciones: equivalencia de vistas de reportes
 
-> **Evidencia del Parcial 1 — Objetivo 6 (vistas).** Ver [`Informe_Parcial_1.md`](../../Informe_Parcial_1.md).
+> **Evidencia del Parcial 1 — Objetivo 6 (vistas).** Ver [`Informe_Parcial_1.md`](Informe_Parcial_1.md).
 
 **Base de datos:** foodstore (PostgreSQL 17)  
 **Archivos comparados:**
-- `db/anexos_tps/vistas_reportes_prompt_opencode.sql` — vistas generadas con prompt OpenCode
-- `db/anexos_tps/vistas_reportes_prompt_propio.sql` — vistas generadas con prompt propio
+- `postgres/experimentos/vistas_reportes_prompt_opencode.sql` — vistas generadas con prompt OpenCode
+- `postgres/experimentos/vistas_reportes_prompt_propio.sql` — vistas generadas con prompt propio
 
 ---
 

@@ -1,6 +1,6 @@
 # Política de REFRESH para `mv_facturacion_categoria_mes`
 
-> **Evidencia del Parcial 1 — Objetivo 6 (vista materializada).** Ver [`Informe_Parcial_1.md`](../../Informe_Parcial_1.md).
+> **Evidencia del Parcial 1 — Objetivo 6 (vista materializada).** Ver [`Informe_Parcial_1.md`](Informe_Parcial_1.md).
 
 ## 1. Naturaleza del reporte y tolerancia al desfase
 
